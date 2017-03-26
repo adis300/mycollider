@@ -33,3 +33,11 @@ A websocket-based signaling server in Go.
 
     go test collider
 
+# Building and running mycollider
+```
+cd [mycollider/collidermain]
+go build
+./collidermain -port=8081 -tls=false room-server=https://turn.votebin.com
+```
+
+

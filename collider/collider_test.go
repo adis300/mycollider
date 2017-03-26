@@ -6,10 +6,10 @@
 package collider
 
 import (
-	"code.google.com/p/go.net/websocket"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"golang.org/x/net/websocket"
 	"net"
 	"net/http"
 	"strconv"

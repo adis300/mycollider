@@ -7,8 +7,11 @@ package main
 
 import (
 	"flag"
+	"golang.org/x/net/websocket"
 	"log"
 	"mycollider/collider"
+	"net/http"
+	"strconv"
 )
 
 var tls = flag.Bool("tls", true, "whether TLS is used")
@@ -21,5 +24,22 @@ func main() {
 	log.Printf("Starting collider: tls = %t, port = %d, room-server=%s", *tls, *port, *roomSrv)
 
 	c := collider.NewCollider(*roomSrv)
-	c.Run(*port, *tls)
+
+	http.Handle("/ws", websocket.Handler(c.WsHandler))
+	http.HandleFunc("/status", c.HttpStatusHandler)
+	http.HandleFunc("/", c.HttpHandler)
+
+	var e error
+
+	pstr := ":" + strconv.Itoa(*port)
+	if *tls {
+		e = http.ListenAndServeTLS(pstr, "/cert/cert.pem", "/cert/key.pem", nil)
+	} else {
+		e = http.ListenAndServe(pstr, nil)
+	}
+
+	if e != nil {
+		log.Fatal("Run: " + e.Error())
+	}
+	// c.Run(*port, *tls)
 }

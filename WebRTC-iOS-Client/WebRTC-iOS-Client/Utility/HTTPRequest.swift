@@ -34,18 +34,71 @@ enum HTTPResponseStatus: Int, CustomStringConvertible {
     }
 }
 
-class HTTPRequest {
+public class HTTPResponse{
     
+    var statusCode:Int
+    var responseData:Data
     
-    static func post(url:String, data:Data, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: Data) -> Void, onFailure:@escaping(_ error:Error) -> Void){
+    public init(status:Int, response:Data){
+        statusCode = status
+        responseData = response
+    }
+    
+    public func parseJson() throws -> [String: Any]{
+        
+        let decoded = try JSONSerialization.jsonObject(with: responseData, options: [])
+        // here "decoded" is of type `Any`, decoded from JSON data
+        
+        // you can now cast it with the right type
+        if let json = decoded as? [String: Any] {
+            return json
+        }else{
+            throw NSError(domain: "HTTPResponseError:JsonDecoding", code: 0, userInfo: nil)
+        }
+    }
+    
+    public func parseJsonArray() throws -> [Any]{
+        let decoded = try JSONSerialization.jsonObject(with: responseData, options: [])
+        // here "decoded" is of type `Any`, decoded from JSON data
+        
+        // you can now cast it with the right type
+        if let jsonArray = decoded as? [Any] {
+            return jsonArray
+        }else{
+            throw NSError(domain: "HTTPResponseError:JsonArrayDecoding", code: 1, userInfo: nil)
+        }
+    }
+    
+}
+
+public class HTTPRequest {
+    
+    public static func setTimeout(timeout: TimeInterval){
+        if timeout > 0{
+            kTimeout = timeout
+        }else{
+            assertionFailure("Setting invalid timeout duration: \(timeout)")
+        }
+    }
+    
+    public static func post(url:String, json:Dictionary<String, Any>, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: HTTPResponse) -> Void, onFailure:@escaping(_ error:Error) -> Void){
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: json) //, options: .prettyPrinted
+            HTTPRequest.sendHTTPRequest(url: url, method: "POST", data: jsonData, headers: headers, onSuccess: onSuccess, onFailure: onFailure, timeout: kTimeout, delegate: nil)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    public static func post(url:String, data:Data, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: HTTPResponse) -> Void, onFailure:@escaping(_ error:Error) -> Void){
         HTTPRequest.sendHTTPRequest(url: url, method: "POST", data: data, headers: headers, onSuccess: onSuccess, onFailure: onFailure, timeout: kTimeout, delegate: nil)
     }
     
-    static func get(url:String, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: Data) -> Void,  onFailure:@escaping(_ error:Error) -> Void){
+    public static func get(url:String, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: HTTPResponse) -> Void,  onFailure:@escaping(_ error:Error) -> Void){
         HTTPRequest.sendHTTPRequest(url: url, method: "POST", data: nil, headers: headers, onSuccess: onSuccess, onFailure: onFailure, timeout: kTimeout, delegate: nil)
     }
     
-    fileprivate static func sendHTTPRequest(url:String, method:String, data:Data?, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: Data) -> Void, onFailure:@escaping (_ error:Error) -> Void, timeout: TimeInterval, delegate: URLSessionDelegate?){
+    fileprivate static func sendHTTPRequest(url:String, method:String, data:Data?, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: HTTPResponse) -> Void, onFailure:@escaping (_ error:Error) -> Void, timeout: TimeInterval, delegate: URLSessionDelegate?){
         let urlAddress = URL(string: url)
         assert(urlAddress != nil, "HTTPRequest: Sending request to invalid URL")
         
@@ -100,11 +153,12 @@ class HTTPRequest {
             
             if let responseData = data{
                 DispatchQueue.main.async {
-                    onSuccess(responseData);
+                    onSuccess(HTTPResponse(status: statusCode, response: responseData))
                 }
             }else{
+                print("WARNING: HTTPRequest: empty response body detected")
                 DispatchQueue.main.async {
-                    onSuccess(Data());
+                    onSuccess(HTTPResponse(status: statusCode, response: Data()))
                 }
             }
 

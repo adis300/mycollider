@@ -322,7 +322,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.votebin.WebRTC-iOS-Client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = Bridging.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "WebRTC-iOS-Client/Bridging.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -340,7 +340,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.votebin.WebRTC-iOS-Client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = Bridging.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "WebRTC-iOS-Client/Bridging.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

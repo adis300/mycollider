@@ -24,4 +24,7 @@ class RTCClient {
 
     var localMediaStream: RTCMediaStream?
 
+    func joinRoom(roomId: String){
+        
+    }
 }

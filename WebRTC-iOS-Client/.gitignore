@@ -16,6 +16,7 @@ build/DerivedData/
 !default.perspectivev3
 xcuserdata/
 .DS_Store
+*.xcworkspacedata
 
 ## Other
 *.moved-aside

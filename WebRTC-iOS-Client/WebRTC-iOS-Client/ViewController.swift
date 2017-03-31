@@ -22,9 +22,18 @@ class ViewController: UIViewController {
         let factory = RTCPeerConnectionFactory()
         let mediaConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         let videoSource = factory.avFoundationVideoSource(with: mediaConstraints)
+        let captureSession = videoSource.captureSession;
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer?.frame = localVideoView.bounds
+        
         localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localTrack")
-        localVideoTrack?.add(localVideoView)
+        // localVideoTrack?.add(localVideoView)
         localVideoView.backgroundColor = UIColor.black
+        
+        localVideoView.layer.addSublayer(previewLayer!)
+        
+        
+        // [self.localView.layer addSublayer:self.previewLayer];
 
     }
 

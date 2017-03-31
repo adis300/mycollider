@@ -22,19 +22,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Local video" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iGV-9C-nlT">
+                                <rect key="frame" x="144" y="28" width="87" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7">
-                                <rect key="frame" x="16" y="28" width="343" height="219"/>
+                                <rect key="frame" x="16" y="57" width="343" height="160"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="219" id="vSx-jk-hxf"/>
+                                    <constraint firstAttribute="height" constant="160" id="ZKM-FU-IHG"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="Lrg-3V-NA7" secondAttribute="trailing" id="4fG-ku-9eK"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="Lrg-3V-NA7" secondAttribute="leading" id="REt-7l-6Nu"/>
-                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="nhj-7B-Qlc"/>
+                            <constraint firstItem="iGV-9C-nlT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="Yrb-P2-aD2"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Lrg-3V-NA7" secondAttribute="trailing" id="a2b-9P-q6U"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="Lrg-3V-NA7" secondAttribute="leading" id="fd2-GE-GUL"/>
+                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="vO1-Ah-9I1"/>
+                            <constraint firstItem="iGV-9C-nlT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zxc-YE-z9I"/>
                         </constraints>
                     </view>
                     <connections>

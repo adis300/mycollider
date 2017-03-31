@@ -7,12 +7,25 @@
 //
 
 import UIKit
+import WebRTC
 
 class ViewController: UIViewController {
 
+    var localVideoTrack:RTCVideoTrack?
+    
+    @IBOutlet weak var localVideoView: RTCEAGLVideoView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let factory = RTCPeerConnectionFactory()
+        let mediaConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+        let videoSource = factory.avFoundationVideoSource(with: mediaConstraints)
+        localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localTrack")
+        localVideoTrack?.add(localVideoView)
+        localVideoView.backgroundColor = UIColor.black
+
     }
 
     override func didReceiveMemoryWarning() {

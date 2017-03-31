@@ -16,7 +16,61 @@
 		E08759491E8D7F5100FC0B65 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E08759471E8D7F4700FC0B65 /* WebRTC.framework */; };
 		E087594A1E8D7F5100FC0B65 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E08759471E8D7F4700FC0B65 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E087594F1E8D94A000FC0B65 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */; };
+		E087596F1E8E08C900FC0B65 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E08759641E8E08BF00FC0B65 /* Starscream.framework */; };
+		E08759701E8E08C900FC0B65 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E08759641E8E08BF00FC0B65 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E08759631E8E08BF00FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6B3E79E619D48B7F006071F7;
+			remoteInfo = "Starscream iOS";
+		};
+		E08759651E8E08BF00FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6B3E79F119D48B7F006071F7;
+			remoteInfo = "Starscream iOSTests";
+		};
+		E08759671E8E08BF00FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D9C3E35F19E48FF1009FC285;
+			remoteInfo = "Starscream OSX";
+		};
+		E08759691E8E08BF00FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D9C3E36919E48FF1009FC285;
+			remoteInfo = "Starscream OSXTests";
+		};
+		E087596B1E8E08BF00FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 091277971BD673A70003036D;
+			remoteInfo = "Starscream tvOS";
+		};
+		E087596D1E8E08BF00FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 091277A01BD673A70003036D;
+			remoteInfo = "Starscream tvOSTests";
+		};
+		E08759711E8E08C900FC0B65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6B3E79E519D48B7F006071F7;
+			remoteInfo = "Starscream iOS";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		E087594B1E8D7F5100FC0B65 /* Embed Frameworks */ = {
@@ -26,6 +80,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				E087594A1E8D7F5100FC0B65 /* WebRTC.framework in Embed Frameworks */,
+				E08759701E8E08C900FC0B65 /* Starscream.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,6 +99,7 @@
 		E08759471E8D7F4700FC0B65 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = "Frameworks/WebRTC-iOS/WebRTC.framework"; sourceTree = "<group>"; };
 		E087594D1E8D7FCD00FC0B65 /* Bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bridging.h; sourceTree = "<group>"; };
 		E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
+		E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Starscream.xcodeproj; path = Utility/Starscream/Starscream.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E08759491E8D7F5100FC0B65 /* WebRTC.framework in Frameworks */,
+				E087596F1E8E08C900FC0B65 /* Starscream.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,9 +167,23 @@
 		E08759461E8D7F3900FC0B65 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */,
 				E08759471E8D7F4700FC0B65 /* WebRTC.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E087595B1E8E08BF00FC0B65 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E08759641E8E08BF00FC0B65 /* Starscream.framework */,
+				E08759661E8E08BF00FC0B65 /* Starscream iOSTests.xctest */,
+				E08759681E8E08BF00FC0B65 /* Starscream.framework */,
+				E087596A1E8E08BF00FC0B65 /* Starscream OSXTests.xctest */,
+				E087596C1E8E08BF00FC0B65 /* Starscream.framework */,
+				E087596E1E8E08BF00FC0B65 /* Starscream tvOSTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,6 +201,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E08759721E8E08C900FC0B65 /* PBXTargetDependency */,
 			);
 			name = "WebRTC-iOS-Client";
 			productName = "WebRTC-iOS-Client";
@@ -164,12 +236,63 @@
 			mainGroup = E08759241E8D7A4F00FC0B65;
 			productRefGroup = E087592E1E8D7A4F00FC0B65 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E087595B1E8E08BF00FC0B65 /* Products */;
+					ProjectRef = E087595A1E8E08BF00FC0B65 /* Starscream.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E087592C1E8D7A4F00FC0B65 /* WebRTC-iOS-Client */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E08759641E8E08BF00FC0B65 /* Starscream.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Starscream.framework;
+			remoteRef = E08759631E8E08BF00FC0B65 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E08759661E8E08BF00FC0B65 /* Starscream iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Starscream iOSTests.xctest";
+			remoteRef = E08759651E8E08BF00FC0B65 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E08759681E8E08BF00FC0B65 /* Starscream.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Starscream.framework;
+			remoteRef = E08759671E8E08BF00FC0B65 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E087596A1E8E08BF00FC0B65 /* Starscream OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Starscream OSXTests.xctest";
+			remoteRef = E08759691E8E08BF00FC0B65 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E087596C1E8E08BF00FC0B65 /* Starscream.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Starscream.framework;
+			remoteRef = E087596B1E8E08BF00FC0B65 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E087596E1E8E08BF00FC0B65 /* Starscream tvOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Starscream tvOSTests.xctest";
+			remoteRef = E087596D1E8E08BF00FC0B65 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E087592B1E8D7A4F00FC0B65 /* Resources */ = {
@@ -197,6 +320,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E08759721E8E08C900FC0B65 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Starscream iOS";
+			targetProxy = E08759711E8E08C900FC0B65 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		E08759341E8D7A4F00FC0B65 /* Main.storyboard */ = {
@@ -316,6 +447,7 @@
 		E08759401E8D7A4F00FC0B65 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = SM4CZU5JS6;
 				ENABLE_BITCODE = NO;
@@ -335,6 +467,7 @@
 		E08759411E8D7A4F00FC0B65 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = SM4CZU5JS6;
 				ENABLE_BITCODE = NO;

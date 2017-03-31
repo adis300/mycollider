@@ -11,6 +11,8 @@ import WebRTC
 
 class ViewController: UIViewController {
 
+    let factory = RTCPeerConnectionFactory()
+
     var localVideoTrack:RTCVideoTrack?
     
     @IBOutlet weak var localVideoView: RTCEAGLVideoView!
@@ -19,27 +21,22 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let factory = RTCPeerConnectionFactory()
+        addLocalPreview()
+        
+    }
+
+    func addLocalPreview(){
         let mediaConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+        
         let videoSource = factory.avFoundationVideoSource(with: mediaConstraints)
-        let captureSession = videoSource.captureSession;
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
         previewLayer?.frame = localVideoView.bounds
         
-        localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localTrack")
+        localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
         // localVideoTrack?.add(localVideoView)
         localVideoView.backgroundColor = UIColor.black
         
         localVideoView.layer.addSublayer(previewLayer!)
-        
-        
-        // [self.localView.layer addSublayer:self.previewLayer];
-
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 

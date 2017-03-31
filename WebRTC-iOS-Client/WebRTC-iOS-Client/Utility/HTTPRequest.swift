@@ -9,6 +9,7 @@
 import UIKit
 
 fileprivate var kTimeout:TimeInterval = 10
+fileprivate var kAllowSelfSignedCertificate: Bool = false
 
 enum HTTPResponseStatus: Int, CustomStringConvertible {
     // Server Events
@@ -73,12 +74,16 @@ public class HTTPResponse{
 
 public class HTTPRequest {
     
-    public static func setTimeout(timeout: TimeInterval){
+    public static func setTimeout(_ timeout: TimeInterval){
         if timeout > 0{
             kTimeout = timeout
         }else{
             assertionFailure("Setting invalid timeout duration: \(timeout)")
         }
+    }
+    
+    public static func setAllowSelfSignedCertificate(_ allow: Bool){
+        kAllowSelfSignedCertificate = allow
     }
     
     public static func post(url:String, json:Dictionary<String, Any>, headers:Dictionary<String, String>, onSuccess:@escaping(_ response: HTTPResponse) -> Void, onFailure:@escaping(_ error:Error) -> Void){
@@ -114,7 +119,11 @@ public class HTTPRequest {
         if let sessionDelegate = delegate {
             session = URLSession(configuration: sessionConfig, delegate: sessionDelegate, delegateQueue: nil)
         }else{
-            session = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: OperationQueue.main)
+            if kAllowSelfSignedCertificate{
+                session = URLSession(configuration: sessionConfig, delegate: AllowSelfSignedCertificate(), delegateQueue: nil)
+            }else{
+                session = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: OperationQueue.main)
+            }
         }
         
         let task = session.dataTask(with: request) { (data, response, error) in
@@ -168,4 +177,12 @@ public class HTTPRequest {
     }
     
     
+}
+
+class AllowSelfSignedCertificate:NSObject, URLSessionDelegate{
+    
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void){
+        completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+    }
+
 }

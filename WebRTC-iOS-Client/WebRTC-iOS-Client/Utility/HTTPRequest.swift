@@ -186,3 +186,16 @@ class AllowSelfSignedCertificate:NSObject, URLSessionDelegate{
     }
 
 }
+
+public func parseJson(data: Data) throws -> [String: Any]{
+    
+    let decoded = try JSONSerialization.jsonObject(with: data, options: [])
+    // here "decoded" is of type `Any`, decoded from JSON data
+    
+    // you can now cast it with the right type
+    if let json = decoded as? [String: Any] {
+        return json
+    }else{
+        throw NSError(domain: "HTTPRequest:JsonDecoding", code: 0, userInfo: nil)
+    }
+}

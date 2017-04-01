@@ -37,6 +37,8 @@ class RTCClient: NSObject {
     func joinRoom(roomId: String){
         
     }
+    
+    func handle
 }
 
 extension RTCClient: WebSocketDelegate{

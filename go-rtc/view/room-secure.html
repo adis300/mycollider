@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Snap Engage</title>
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="public/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="public/css/room.css">
+    <script src="public/js/jquery-2.1.4.min.js"></script>
+    <script src="public/js/rtckit.js"></script>
+</head>
+<body>
+    <div id="localVideoContainer" class="videoContainer">
+        <video id="localVideo"></video>
+        <div class="control">
+        	<button id="muteButton" onclick="mute()"><span class="on zmdi zmdi-mic"></span></button>
+			<button id="pauseButton" onclick="pause()"><span class="on zmdi zmdi-videocam"></span></button>
+            <button id="shareScreenButton" onclick="shareScreen()"><span class="zmdi zmdi-tv"></span></button>
+        </div>
+    </div>
+    <div id="remoteVideos"></div>
+</body>
+
+<script src="public/js/videocontroller.js"></script>
+
+</html>

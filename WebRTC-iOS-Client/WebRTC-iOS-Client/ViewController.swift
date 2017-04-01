@@ -12,8 +12,7 @@ import WebRTC
 class ViewController: UIViewController {
 
     let factory = RTCPeerConnectionFactory()
-
-    var localVideoTrack:RTCVideoTrack?
+    let rtcClient = RTCClient()
     
     @IBOutlet weak var localVideoView: RTCEAGLVideoView!
     
@@ -24,6 +23,10 @@ class ViewController: UIViewController {
         addLocalPreview()
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        rtcClient.connect(roomId: "myroom")
+    }
 
     func addLocalPreview(){
         let mediaConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
@@ -32,11 +35,13 @@ class ViewController: UIViewController {
         let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
         previewLayer?.frame = localVideoView.bounds
         
-        localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
         // localVideoTrack?.add(localVideoView)
         localVideoView.backgroundColor = UIColor.black
         
         localVideoView.layer.addSublayer(previewLayer!)
+        
+        rtcClient.localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
+        //rtcClient
     }
 
 

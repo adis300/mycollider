@@ -7,7 +7,7 @@ func getConnectMessage(sessionid string) []byte {
 	if len(TURN) == 0 {
 		return []byte(fmt.Sprintf(`{"event":"connect","data":{"sessionid":"%s","stunservers":[{"url":"%s"}],"turnservers":[]}}`, sessionid, STUN))
 	}
-	return []byte(fmt.Sprintf(`{"event":"connect","data":{"sessionid":"%s","stunservers":[{"url":"%s"}],"turnservers":["url":"%s"]}}`, sessionid, STUN, TURN))
+	return []byte(fmt.Sprintf(`{"event":"connect","data":{"sessionid":"%s","stunservers":[{"url":"%s"}],"turnservers":[{"url":"%s"}]}}`, sessionid, STUN, TURN))
 }
 
 func getRemoveFeedMessage(sessionid string, tp string) []byte {

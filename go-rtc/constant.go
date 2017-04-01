@@ -14,7 +14,7 @@ const EMAIL_RGX string = `(?i)[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}`
 
 const INVALID_ROOM int = 9
 const STUN string = "stun:stun.l.google.com:19302"
-const TURN string = "https://turn.votebin.com:3478"
+const TURN string = "" //turn:turn.votebin.com:3478
 
 /*
 func getStunServers() []byte {

@@ -38,22 +38,43 @@ class RTCClient: NSObject {
         
     }
     
-    func handle
+    func handleServerMessage(data: [String: Any]){
+        if let event = data["event"] as? String{
+            switch event {
+            case "connect":
+                print("This is a connect message")
+                print(data)
+            default:
+                print("ERROR: Unknown server envent")
+            }
+        }else{
+            print("ERROR: Event marker missing")
+
+        }
+    }
 }
 
 extension RTCClient: WebSocketDelegate{
     func websocketDidConnect(socket: WebSocket){
-        socket.write(string: "Hi Server!") {
-            print("Send data finished")
-        }
         print("Did connect")
     }
     func websocketDidDisconnect(socket: WebSocket, error: NSError?){
         print("Did disconnect")
     }
     func websocketDidReceiveMessage(socket: WebSocket, text: String){
-        print("Received som text")
-        print(text)
+        if let data = text.data(using: .utf8){
+            do {
+                let json = try parseJson(data: data)
+                handleServerMessage(data: json)
+            } catch {
+                print("ERROR: parsing json data")
+                print(text)
+            }
+            
+        }else{
+            print("ERROR: Should not happen")
+            print(text)
+        }
     }
     
     func websocketDidReceiveData(socket: WebSocket, data: Data){

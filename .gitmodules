@@ -1,9 +1,6 @@
 [submodule "WebRTC-iOS-Client/WebRTC-iOS-Client/Frameworks/WebRTC-iOS"]
 	path = WebRTC-iOS-Client/WebRTC-iOS-Client/Frameworks/WebRTC-iOS
 	url = https://github.com/wenxin3262/WebRTC-iOS
-[submodule "WebRTC-iOS-Client/WebRTC-iOS-Client/Frameworks/Starscream"]
-	path = WebRTC-iOS-Client/WebRTC-iOS-Client/Frameworks/Starscream
-	url = https://github.com/daltoniam/Starscream.git
 [submodule "govideo"]
 	path = govideo
 	url = https://github.com/adis300/govideo.git

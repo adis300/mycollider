@@ -8,7 +8,6 @@
 
 import UIKit
 import WebRTC
-import Starscream
 
 let RTC_SERVER_URL = "wss://localhost:8081/ws/"
 let STUN_SERVER_URL = "stun:stun.l.google.com:19302"

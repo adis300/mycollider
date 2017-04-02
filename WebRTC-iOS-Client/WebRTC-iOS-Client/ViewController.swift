@@ -25,7 +25,6 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        rtcClient.connect(roomId: "myroom")
     }
 
     func addLocalPreview(){
@@ -41,6 +40,8 @@ class ViewController: UIViewController {
         localVideoView.layer.addSublayer(previewLayer!)
         
         rtcClient.localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
+        rtcClient.connect(roomId: "myroom")
+
         //rtcClient
     }
 

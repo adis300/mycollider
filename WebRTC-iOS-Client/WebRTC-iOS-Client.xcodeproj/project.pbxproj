@@ -10,6 +10,7 @@
 		E00A8D5F1E9019920005C452 /* RTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D5E1E9019920005C452 /* RTCClient.swift */; };
 		E00A8D7C1E90A3770005C452 /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D7A1E90A3770005C452 /* SSLSecurity.swift */; };
 		E00A8D7D1E90A3770005C452 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D7B1E90A3770005C452 /* WebSocket.swift */; };
+		E00A8D801E90AA770005C452 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D7F1E90AA770005C452 /* SwiftyJSON.swift */; };
 		E08759311E8D7A4F00FC0B65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08759301E8D7A4F00FC0B65 /* AppDelegate.swift */; };
 		E08759331E8D7A4F00FC0B65 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08759321E8D7A4F00FC0B65 /* ViewController.swift */; };
 		E08759361E8D7A4F00FC0B65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E08759341E8D7A4F00FC0B65 /* Main.storyboard */; };
@@ -38,6 +39,7 @@
 		E00A8D5E1E9019920005C452 /* RTCClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTCClient.swift; sourceTree = "<group>"; };
 		E00A8D7A1E90A3770005C452 /* SSLSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSLSecurity.swift; sourceTree = "<group>"; };
 		E00A8D7B1E90A3770005C452 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		E00A8D7F1E90AA770005C452 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		E087592D1E8D7A4F00FC0B65 /* WebRTC-iOS-Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WebRTC-iOS-Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E08759301E8D7A4F00FC0B65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E08759321E8D7A4F00FC0B65 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -69,6 +71,14 @@
 				E00A8D7B1E90A3770005C452 /* WebSocket.swift */,
 			);
 			path = Starscream;
+			sourceTree = "<group>";
+		};
+		E00A8D7E1E90AA5B0005C452 /* SwiftyJSON */ = {
+			isa = PBXGroup;
+			children = (
+				E00A8D7F1E90AA770005C452 /* SwiftyJSON.swift */,
+			);
+			path = SwiftyJSON;
 			sourceTree = "<group>";
 		};
 		E08759241E8D7A4F00FC0B65 = {
@@ -106,6 +116,7 @@
 		E08759421E8D7EE800FC0B65 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				E00A8D7E1E90AA5B0005C452 /* SwiftyJSON */,
 				E00A8D791E90A3770005C452 /* Starscream */,
 				E00A8D5E1E9019920005C452 /* RTCClient.swift */,
 				E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */,
@@ -200,6 +211,7 @@
 				E00A8D7C1E90A3770005C452 /* SSLSecurity.swift in Sources */,
 				E087594F1E8D94A000FC0B65 /* HTTPRequest.swift in Sources */,
 				E00A8D5F1E9019920005C452 /* RTCClient.swift in Sources */,
+				E00A8D801E90AA770005C452 /* SwiftyJSON.swift in Sources */,
 				E08759311E8D7A4F00FC0B65 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,10 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <WebRTC/RTCPeerConnection.h>
-#import <WebRTC/RTCEAGLVideoView.h>
-#import <WebRTC/RTCVideoTrack.h>
-
-
-// DISI's impl of http request
-// #import "HTTPRequest.h"
+#import <WebRTC/WebRTC.h>
+// #import <WebRTC/RTCEAGLVideoView.h>
+// #import <WebRTC/RTCVideoTrack.h>

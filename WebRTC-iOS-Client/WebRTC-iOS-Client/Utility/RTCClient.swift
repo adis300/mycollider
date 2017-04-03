@@ -9,13 +9,6 @@
 import UIKit
 import WebRTC
 
-let RTC_SERVER_URL = "wss://localhost:8081/ws/"
-let STUN_SERVER_URL = "stun:stun.l.google.com:19302"
-let TURN_SERVER_URL = "https://turn.votebin.com"
-
-let kDefaultMediaConstraints = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio":"true", "OfferToReceiveVideo" :"true"]
-    , optionalConstraints: nil)
-
 class RTCClient: NSObject {
     
     var audioMute = false
@@ -37,7 +30,7 @@ class RTCClient: NSObject {
     var sessionReady = false
     
     // Utility properties
-    fileprivate var peerConnectionFactory = RTCPeerConnectionFactory()
+    // fileprivate var peerConnections:[RTCPeerConnection] = []
 
     
     func connect(roomId: String){
@@ -48,7 +41,7 @@ class RTCClient: NSObject {
         
         clearSession()
         self.roomId = roomId
-        socket = WebSocket(url: URL(string: RTC_SERVER_URL + roomId)!)
+        socket = WebSocket(url: URL(string: RTCClientConfig.RTC_SERVER_URL + roomId)!)
         socket?.disableSSLCertValidation = true
         socket?.delegate = self
         self.socket?.connect()
@@ -116,9 +109,7 @@ class RTCClient: NSObject {
         for (sid, clientResource) in roomDescription {
             for (type, typeEnabled) in clientResource{
                 if typeEnabled.boolValue {
-                    let rtcConfig = RTCConfiguration()
-                    
-                    let peerConnection = peerConnectionFactory.peerConnection(with: rtcConfig, constraints: kDefaultMediaConstraints, delegate: self)
+                    let peer = RTCPeer(options: ["id": "TODO: Implement"], delegate: self)
                 }
             }
             /*
@@ -221,16 +212,34 @@ extension RTCClient: WebSocketDelegate{
     
 }
 
-extension RTCClient: RTCPeerConnectionDelegate {
+extension RTCClient: RTCPeerConnectionDelegate{
+    
+    
+    // MARK: Peer connection active methods
+    
+    private func sendMessage(){
+        var message = ["to":roomId!, "sid":sessionId, "broadcaster": sessionId!]
+        /*
+        var message = [
+            to: this.id,
+            sid: this.sid,
+            broadcaster: this.broadcaster,
+            roomType: this.type,
+            type: messageType,
+            payload: payload,
+            prefix: "webkit"
+        ];
+         */
+    }
     
     /** Called when the SignalingState changed. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState){
-
+        
     }
     
     /** Called when media is received on a new stream from remote peer. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
-
+        
     }
     
     /** Called when a remote peer closes a stream. */
@@ -268,5 +277,50 @@ extension RTCClient: RTCPeerConnectionDelegate {
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel){
         
     }
+}
+
+class RTCPeer {
+    
+    var peerConnection: RTCPeerConnection
+    var peerId: String!
+    var type = "video"   //default peer type to video
+    var oneway = false
+    var sharemyscreen = false
+    var browserPrefix = "webkit"
+    var enableDataChannels = RTCClientConfig.enableDataChannels
+    
+    fileprivate static let peerConnectionFactory = RTCPeerConnectionFactory()
+
+    
+    private func getReceiveMedia () -> [String: Any]{
+        
+        var receiveMedia:[String: Any] = [:]
+        var mandatory:[String: Bool] = [:]
+        
+        if type == "screen"{
+            mandatory["OfferToReceiveAudio"] = false
+        }else{
+            mandatory["OfferToReceiveAudio"] = RTCClientConfig.defaultMediaConstriantsMandatory["OfferToReceiveAudio"] == "true"
+        }
+        mandatory["OfferToReceiveVideo"] = RTCClientConfig.defaultMediaConstriantsMandatory["OfferToReceiveVideo"] == "true"
+        
+        receiveMedia["mandatory"] = mandatory
+        
+        return receiveMedia
+    }
+    
+
+    init(options: [String: Any], delegate: RTCPeerConnectionDelegate) {
+        
+        var opt: [String: Any] = RTCClientConfig.defaultOptions
+        
+        for (key, value) in options {
+            opt[key] = value
+        }
+        peerId = opt["id"] as! String
+
+        peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCConfiguration(), constraints: RTCClientConfig.defaultMediaConstraints, delegate: delegate)
+    }
+    
 }
 

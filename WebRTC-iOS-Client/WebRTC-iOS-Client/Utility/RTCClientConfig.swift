@@ -15,8 +15,10 @@ class RTCClientConfig {
     static let TURN_SERVER_URL = "https://turn.votebin.com"
     
     // Default Configs
-    static let defaultMediaConstriantsMandatory = ["OfferToReceiveAudio":"true", "OfferToReceiveVideo" :"true"];
-    static let defaultMediaConstraints = RTCMediaConstraints(mandatoryConstraints: defaultMediaConstriantsMandatory, optionalConstraints: nil)
+    static let defaultOfferToReceiveAudio = true
+    static let defaultOfferToReceiveVideo = true
+    
+    static let defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":defaultOfferToReceiveAudio, "OfferToReceiveVideo" :defaultOfferToReceiveVideo]];
     
     static let enableDataChannels = true
     
@@ -29,4 +31,44 @@ class RTCClientConfig {
     
     static let defaultOptions:[String: Any] = [:]
     
+    static let dataChannelConfiguration = RTCDataChannelConfiguration()
+    
+    
+    
+}
+
+class RTCFactory{
+    
+    static func getMediaConstraints(receiveMedia: [String: Any]) -> RTCMediaConstraints{
+        
+        let mandatory = receiveMedia["mandatory"] as! [String: Bool]
+        
+        var mediaConstraintsMandatory: [String:String] = [:]
+        
+        var offerVideo, offerAudio: Bool
+        if let val = mandatory["OfferToReceiveVideo"]{
+            offerVideo = val
+        }else{
+            offerVideo = RTCClientConfig.defaultOfferToReceiveVideo
+        }
+        
+        if let val = mandatory["OfferToReceiveAudio"]{
+            offerAudio = val
+        }else{
+            offerAudio = RTCClientConfig.defaultOfferToReceiveAudio
+        }
+        
+        if offerVideo {
+            mediaConstraintsMandatory["OfferToReceiveVideo"] = "true"
+        }else{
+            mediaConstraintsMandatory["OfferToReceiveVideo"] = "false"
+        }
+        if offerAudio {
+            mediaConstraintsMandatory["OfferToReceiveAudio"] = "true"
+        }else{
+            mediaConstraintsMandatory["OfferToReceiveAudio"] = "false"
+        }
+        
+        return RTCMediaConstraints(mandatoryConstraints: mediaConstraintsMandatory, optionalConstraints: nil)
+    }
 }

@@ -29,6 +29,8 @@ class RTCClient: NSObject {
     
     var sessionReady = false
     
+    var peers:[RTCPeer] = []
+    
     // Utility properties
     // fileprivate var peerConnections:[RTCPeerConnection] = []
 
@@ -106,10 +108,17 @@ class RTCClient: NSObject {
     
     private func onJoin(roomDescription: JSON) {
         print(roomDescription.count)
-        for (sid, clientResource) in roomDescription {
+        for (id, clientResource) in roomDescription {
             for (type, typeEnabled) in clientResource{
                 if typeEnabled.boolValue {
-                    let peer = RTCPeer(options: ["id": "TODO: Implement"], delegate: self)
+                    let receiveMedia = [
+                        "mandatory":[
+                            "OfferToReceiveAudio": type != "screen" && RTCClientConfig.defaultOfferToReceiveAudio,
+                            "OfferToReceiveVideo": RTCClientConfig.defaultOfferToReceiveVideo
+                        ]
+                    ]
+                    let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], delegate: self)
+                    peers.append(peer)
                 }
             }
             /*
@@ -168,6 +177,7 @@ extension RTCClient {
     }
     
     fileprivate func clearSession(){
+        // TODO: Remove all peers
         self.sessionId = nil
         self.sessionReady = false
         self.localVideoTrack = nil
@@ -281,6 +291,8 @@ extension RTCClient: RTCPeerConnectionDelegate{
 
 class RTCPeer {
     
+    fileprivate static let peerConnectionFactory = RTCPeerConnectionFactory()
+
     var peerConnection: RTCPeerConnection
     var peerId: String!
     var type = "video"   //default peer type to video
@@ -288,9 +300,11 @@ class RTCPeer {
     var sharemyscreen = false
     var browserPrefix = "webkit"
     var enableDataChannels = RTCClientConfig.enableDataChannels
-    
-    fileprivate static let peerConnectionFactory = RTCPeerConnectionFactory()
-
+    var sid: String = String(Date().timeIntervalSince1970)
+    //var stream
+    //var channels
+    //var receiveMedia
+    var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
     
     private func getReceiveMedia () -> [String: Any]{
         
@@ -300,9 +314,10 @@ class RTCPeer {
         if type == "screen"{
             mandatory["OfferToReceiveAudio"] = false
         }else{
-            mandatory["OfferToReceiveAudio"] = RTCClientConfig.defaultMediaConstriantsMandatory["OfferToReceiveAudio"] == "true"
+            mandatory["OfferToReceiveAudio"] = RTCClientConfig.defaultOfferToReceiveAudio
         }
-        mandatory["OfferToReceiveVideo"] = RTCClientConfig.defaultMediaConstriantsMandatory["OfferToReceiveVideo"] == "true"
+        
+        mandatory["OfferToReceiveVideo"] = RTCClientConfig.defaultOfferToReceiveVideo
         
         receiveMedia["mandatory"] = mandatory
         
@@ -318,8 +333,57 @@ class RTCPeer {
             opt[key] = value
         }
         peerId = opt["id"] as! String
-
-        peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCConfiguration(), constraints: RTCClientConfig.defaultMediaConstraints, delegate: delegate)
+        
+        if let val  = opt["type"] as? String{
+            type = val
+        }
+        if let val  = opt["sid"] as? String{
+            sid = val
+        }
+        if let val  = opt["browserPrefix"] as? String{
+            browserPrefix = val
+        }
+        if let val  = opt["enableDataChannels"] as? Bool{
+            enableDataChannels = val
+        }
+        if let val  = opt["sharemyscreen"] as? Bool{
+            sharemyscreen = val
+        }
+        if let val  = opt["oneway"] as? Bool{
+            oneway = val
+        }
+        
+        if let val = opt["receiveMedia"] as? [String: Any]{
+            receiveMedia = val
+        }else{
+            receiveMedia = RTCClientConfig.defaultReceiveMedia
+        }
+        
+        let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
+        peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCConfiguration(), constraints: mediaConstraints, delegate: delegate)
+        
+    }
+    
+    func start(){
+        if (self.enableDataChannels) {
+            let dataChannel = peerConnection.dataChannel(forLabel: "simplewebrtc", configuration: RTCClientConfig.dataChannelConfiguration)
+            // TODO: Make use of dataChannel
+        }
+        
+        peerConnection.offer(for: RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)) { (sessionDescription, error) in
+            // TODO: Make use of sessionDescription & err
+            if let err = error{
+                print(err.localizedDescription)
+                return
+            }
+            if let sdp = sessionDescription{
+                print(sdp)
+            }
+        }
+        
+        // this.pc.offer(this.receiveMedia, function(err, sessionDescription) {
+            //self.send('offer', sessionDescription);
+        // });
     }
     
 }

@@ -18,7 +18,7 @@ class RTCClient: NSObject {
     
     var localAudioTrack: RTCAudioTrack?
 
-    var localMediaStream: RTCMediaStream?
+    var localMediaStreams: [RTCMediaStream] = []
     
     var socket: WebSocket?
     
@@ -30,6 +30,12 @@ class RTCClient: NSObject {
     var sessionReady = false
     
     var peers:[RTCPeer] = []
+    
+    fileprivate func filterPeers(peerId: String?, type: String?) -> [RTCPeer]{
+        return peers.filter{(peer) in
+            return (peerId == nil || (peer.peerId == peerId)) && (type == nil || peer.type == type)
+        }
+    }
     
     // Utility properties
     // fileprivate var peerConnections:[RTCPeerConnection] = []
@@ -86,13 +92,15 @@ class RTCClient: NSObject {
                 }
                 let roomDescription = data["roomDescription"]
                 onJoin(roomDescription: roomDescription)
-                
+            
+            case "message":
+                let data = msg["data"]
+                onMessage(data)
             default:
                 assertionFailure("ERROR: Unknown server envent")
             }
         }else{
-            print("ERROR: Event marker missing")
-
+            assertionFailure("ERROR: Event marker missing")
         }
     }
     
@@ -102,8 +110,7 @@ class RTCClient: NSObject {
             return
         }
         
-        let msg: [String: Any] = ["event":"join", "data": roomId!]
-        sendMessage(msg)
+        sendMessage(event: "join", data: roomId!)
     }
     
     private func onJoin(roomDescription: JSON) {
@@ -117,51 +124,83 @@ class RTCClient: NSObject {
                             "OfferToReceiveVideo": RTCClientConfig.defaultOfferToReceiveVideo
                         ]
                     ]
-                    let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], delegate: self)
+                    let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self, delegate: self)
+                    //TODO: self.emit("createdPeer")
+                    peer.start()
                     peers.append(peer)
                 }
             }
-            /*
-            if let clientRes as? [String: Bool] {
-                
-            }else{
-                assertionFailure("Invalid client resources format")
-            }*/
         }
-        /*
-            if (roomDescription) {
-                var id,
-                    client,
-                    type,
-                    peer;
-                for (id in roomDescription) {
-                    client = roomDescription[id];
-                    for (type in client) {
-                        if (client[type]) {
-                            peer = self.webrtc.createPeer({
-                                id: id,
-                                type: type,
-                                enableDataChannels: self.config.enableDataChannels && type !== 'screen',
-                                receiveMedia: {
-                                    mandatory: {
-                                        OfferToReceiveAudio: type !== 'screen' && self.config.receiveMedia.OfferToReceiveAudio,
-                                        OfferToReceiveVideo: self.config.receiveMedia.OfferToReceiveVideo
-                                    }
-                                }
-                            });
-                            self.emit('createdPeer', peer);
-                            peer.start();
+    }
+    
+    private func onMessage(_ data: JSON){
+        
+        if let type = data["type"].string{
+            
+            let sessionPeers = filterPeers(peerId: data["from"].string, type: data["roomType"].string)
+            var peer: RTCPeer?
+
+            if type == "offer"{
+                
+
+                for p in sessionPeers {
+                    if p.sid  == data["sid"].string!{
+                        peer = p
+                        break
+                    }
+                }
+                
+                if peer == nil{
+                    let isScreen = data["roomType"].string! == "screen"
+                    
+                    var enableDataChannels = false, sharemyscreen = false, broadcaster: String? = nil
+                    
+                    if !isScreen && RTCClientConfig.enableDataChannels{
+                        enableDataChannels = true
+                    }
+                    if isScreen {
+                        if data["broadcaster"] == JSON.null {
+                            sharemyscreen = true
+                            broadcaster = sessionId!
                         }
+                    }
+                    
+                    peer = RTCPeer(options: [
+                        "id": data["from"].string,
+                        "sid": data["sid"].string!,
+                        "type": data["roomType"].string!,
+                        "enableDataChannels": enableDataChannels,
+                        "sharemyscreen": sharemyscreen,
+                        "broadcaster": broadcaster
+                        ], parent: self, delegate: self)
+                    //TODO: self.emit("createdPeer")
+                    peers.append(peer!)
+                }
+                peer?.handleMessage(data)
+            }else{
+                for p in sessionPeers {
+                    let sid = data["sid"].string
+                    if sid == nil || sid == p.sid{
+                        p.handleMessage(data);
                     }
                 }
             }
-         */
+        }else{
+            assertionFailure("type unavailable, bad offer")
+        }
+    
     }
 }
 
 extension RTCClient {
     
-    fileprivate func sendMessage(_ msg: [String: Any]){
+    fileprivate func sendMessage(event: String, data: Any){
+        
+        let msg = ["event": event, "data": data]
+        sendMessage(msg)
+    }
+    
+    private func sendMessage(_ msg: [String: Any]){
         
         if let sock = socket{
             do {
@@ -177,12 +216,17 @@ extension RTCClient {
     }
     
     fileprivate func clearSession(){
-        // TODO: Remove all peers
+        for peer in peers{
+            for stream in localMediaStreams{
+                peer.peerConnection.remove(stream)
+            }
+        }
+        peers = []
         self.sessionId = nil
         self.sessionReady = false
         self.localVideoTrack = nil
         self.localAudioTrack = nil
-        self.localMediaStream = nil
+        self.localMediaStreams = []
         self.socket = nil
         self.roomId = nil
         self.iceServers = []
@@ -202,13 +246,6 @@ extension RTCClient: WebSocketDelegate{
         if let data = text.data(using: .utf8){
             let json = JSON(data: data)
             handleServerMessage(msg: json)
-            /*
-            do {
-                let json = try parseJson(data: data)
-            } catch {
-                print("ERROR: parsing json data")
-                print(text)
-            }*/
             
         }else{
             print("ERROR: Should not happen")
@@ -224,68 +261,50 @@ extension RTCClient: WebSocketDelegate{
 
 extension RTCClient: RTCPeerConnectionDelegate{
     
-    
-    // MARK: Peer connection active methods
-    
-    private func sendMessage(){
-        var message = ["to":roomId!, "sid":sessionId, "broadcaster": sessionId!]
-        /*
-        var message = [
-            to: this.id,
-            sid: this.sid,
-            broadcaster: this.broadcaster,
-            roomType: this.type,
-            type: messageType,
-            payload: payload,
-            prefix: "webkit"
-        ];
-         */
-    }
-    
     /** Called when the SignalingState changed. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState){
-        
+        print("DEBUG, peer connection state did change")
     }
     
     /** Called when media is received on a new stream from remote peer. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
-        
+        print("DEBUG, peer connection did add stream")
     }
     
     /** Called when a remote peer closes a stream. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream){
-        
+        print("DEBUG, peer connection did remove stream")
     }
     
     /** Called when negotiation is needed, for example ICE has restarted. */
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection){
-        
+        print("DEBUG, peer connection should negotiate")
     }
     
     /** Called any time the IceConnectionState changes. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState){
-        
+        print("DEBUG, peer connection ice state did change")
     }
     
     
     /** Called any time the IceGatheringState changes. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState){
-        
+        print("DEBUG, peer connection ice gathering state did change")
     }
     
     /** New ice candidate has been found. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate){
-        
+        print("DEBUG, peer connection did generate new ICE candidate")
     }
     
     /** Called when a group of local Ice candidates have been removed. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]){
-        
+        print("DEBUG, peer connection did remove candidates")
     }
     
     /** New data channel has been opened. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel){
-        
+        print("DEBUG, peer connection did open data channel")
     }
 }
 
@@ -301,10 +320,12 @@ class RTCPeer {
     var browserPrefix = "webkit"
     var enableDataChannels = RTCClientConfig.enableDataChannels
     var sid: String = String(Date().timeIntervalSince1970)
+    var broadcaster: String?
     //var stream
     //var channels
     //var receiveMedia
     var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
+    let parent: RTCClient
     
     private func getReceiveMedia () -> [String: Any]{
         
@@ -325,7 +346,9 @@ class RTCPeer {
     }
     
 
-    init(options: [String: Any], delegate: RTCPeerConnectionDelegate) {
+    init(options: [String: Any?], parent: RTCClient, delegate: RTCPeerConnectionDelegate) {
+        
+        self.parent = parent
         
         var opt: [String: Any] = RTCClientConfig.defaultOptions
         
@@ -362,6 +385,20 @@ class RTCPeer {
         let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
         peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCConfiguration(), constraints: mediaConstraints, delegate: delegate)
         
+        // handle screensharing/broadcast mode
+        if type == "screen" {
+            if sharemyscreen { //&& has a localScreen
+                print("adding local screen stream to peer connection");
+                // peerConnection.add(<#T##stream: RTCMediaStream##RTCMediaStream#>) // Add a local screen
+                // broadcaster = opt["broadcaster"] as! String
+                assertionFailure("Screensharing is not yet supported")
+            }
+        } else {
+            // TODO: Add all local streams
+            for stream in parent.localMediaStreams{
+                peerConnection.add(stream)
+            }
+        }
     }
     
     func start(){
@@ -376,8 +413,15 @@ class RTCPeer {
                 print(err.localizedDescription)
                 return
             }
-            if let sdp = sessionDescription{
-                print(sdp)
+            if let sessionDesc = sessionDescription{
+                self.peerConnection.setLocalDescription(sessionDesc, completionHandler: { (localSdpError) in
+                    if let e = localSdpError{
+                        assertionFailure(e.localizedDescription)
+                    }
+                })
+                self.sendPeerMessage(messageType: "offer", payload: ["type":"offer", "sdp": sessionDesc.sdp])
+            }else{
+                assertionFailure("Failed to get session description")
             }
         }
         
@@ -386,5 +430,71 @@ class RTCPeer {
         // });
     }
     
+    // MARK: Peer connection active methods
+    
+    private func sendPeerMessage(messageType: String, payload:[String : Any]){
+        let message: [String: Any]
+        if let broadcaster = self.broadcaster{
+            message = ["type": messageType, "to":self.peerId, "sid":self.sid, "broadcaster": broadcaster, "roomType": self.type, "payload": payload, "prefix": self.browserPrefix]
+        }else{
+            message = ["type": messageType, "to":self.peerId, "sid":self.sid, "roomType": self.type, "payload": payload, "prefix": self.browserPrefix]
+        }
+        parent.sendMessage(event: "message", data: message)
+    }
+    
+    fileprivate func handleMessage(_ message: JSON){
+        // TODO: Implement
+        print("RTCPeer:handleMessage:\(message)")
+        
+        if let prefix = message["prefix"].string{
+            self.browserPrefix = prefix
+        }
+        
+        let type = message["type"].string!  //Type must by available, protected from top level onMessage
+        
+        switch type {
+        case "offer":
+            peerConnection
+            print(type)
+        default:
+            assertionFailure("RTCPeer:handleMessage: unknown message type")
+        }
+        /*
+        if (message.prefix) this.browserPrefix = message.prefix;
+        
+        if (message.type === 'offer') {
+            if (!this.nick) this.nick = message.payload.nick;
+            delete message.payload.nick;
+            this.pc.handleOffer(message.payload, function(err) {
+            if (err) {
+            return;
+            }
+            // auto-accept
+            self.pc.answer(function(err, sessionDescription) {
+            //self.send('answer', sessionDescription);
+            });
+            });
+        } else if (message.type === 'answer') {
+            if (!this.nick) this.nick = message.payload.nick;
+            delete message.payload.nick;
+            this.pc.handleAnswer(message.payload);
+        } else if (message.type === 'candidate') {
+            this.pc.processIce(message.payload);
+        } else if (message.type === 'connectivityError') {
+            this.parent.emit('connectivityError', self);
+        } else if (message.type === 'mute') {
+            this.parent.emit('mute', { id: message.from, name: message.payload.name });
+        } else if (message.type === 'unmute') {
+            this.parent.emit('unmute', { id: message.from, name: message.payload.name });
+        } else if (message.type === 'endOfCandidates') {
+            console.log("Peer connection");
+            console.log(this.pc);
+            var mLines = this.pc.pc.peerconnection.transceivers || [];
+            mLines.forEach(function(mLine) {
+                if (mLine.iceTransport) mLine.iceTransport.addRemoteCandidate({});
+            });
+        }
+        */
+    }
 }
 

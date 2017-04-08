@@ -12,13 +12,15 @@ import WebRTC
 class RTCClientConfig {
     
     // static let SECURE_CONNECTION = false
-    static let RTC_SERVER_URL = "wss://localhost:8081/ws/"
+    static let RTC_SERVER_URL = "wss://192.168.200.112:8081/ws/"
     static let STUN_SERVER_URL = "stun:stun.l.google.com:19302"
     static let TURN_SERVER_URL = "https://turn.votebin.com"
+    static let validateSsl = false
     
+    static let audioOnly = false
     // Default Configs
     static let defaultOfferToReceiveAudio = true
-    static let defaultOfferToReceiveVideo = true
+    static let defaultOfferToReceiveVideo = !audioOnly
     
     static let defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":defaultOfferToReceiveAudio, "OfferToReceiveVideo" :defaultOfferToReceiveVideo]];
     
@@ -46,13 +48,22 @@ class RTCClientConfig {
         return RTCClientConfig.rtcConfiguration
     }
     
+    static let localMediaStreamId = "local_stream"
+    static let localAudioTrackId = "local_audio"
+    static let localVideoTrackId = "local_video"
+
 }
 
 class RTCFactory{
     
-    static func getMediaConstraints(receiveMedia: [String: Any]) -> RTCMediaConstraints{
+    static let peerConnectionFactory = RTCPeerConnectionFactory()
+
+    static func getMediaConstraints(receiveMedia: [String: Any]?) -> RTCMediaConstraints{
         
-        let mandatory = receiveMedia["mandatory"] as! [String: Bool]
+        var mandatory:[String: Bool] = [:]
+        if let mandatoryObj = receiveMedia?["mandatory"] as? [String: Bool]{
+            mandatory = mandatoryObj
+        }
         
         var mediaConstraintsMandatory: [String:String] = [:]
         
@@ -104,3 +115,10 @@ class RTCFactory{
  stun.voxgratia.org
  stun.xten.com
  */
+
+protocol RTCClientDelegate {
+    
+    func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool)
+
+}
+

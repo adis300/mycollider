@@ -9,6 +9,7 @@
 import UIKit
 import WebRTC
 
+
 class RTCClient: NSObject {
     
     var audioMute = false
@@ -31,6 +32,8 @@ class RTCClient: NSObject {
     
     var peers:[String: RTCPeer] = [:]
     
+    var delegate: RTCClientDelegate?
+    
     
     fileprivate func filterPeers(peerId: String?, type: String?) -> [RTCPeer]{
         return peers.filter{(peerId, peer) in
@@ -41,8 +44,47 @@ class RTCClient: NSObject {
     // Utility properties
     // fileprivate var peerConnections:[RTCPeerConnection] = []
     
-    func initialize(localStream: RTCMediaStream){
-        localMediaStream = localStream
+    func initialize(delegate: RTCClientDelegate){
+        self.delegate = delegate
+        localMediaStream = RTCFactory.peerConnectionFactory.mediaStream(withStreamId: RTCClientConfig.localMediaStreamId)
+        
+        // Initialize audio track
+        localAudioTrack = RTCFactory.peerConnectionFactory.audioTrack(withTrackId: RTCClientConfig.localAudioTrackId)
+        localMediaStream?.addAudioTrack(localAudioTrack!)
+        
+        // let audioDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInMicrophone, mediaType: AVMediaTypeAudio, position: .unspecified)
+        
+        
+        
+        if RTCClientConfig.audioOnly{
+            delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: true, audioOnly: RTCClientConfig.audioOnly)
+        }else{
+            
+            
+            let authStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
+            if authStatus == .restricted || authStatus == .denied {
+                print("相机访问受限");
+                delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: false, audioOnly: RTCClientConfig.audioOnly)
+            }else{
+                
+                if let _ = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front){
+                    let videoSource = RTCFactory.peerConnectionFactory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
+                    localVideoTrack = RTCFactory.peerConnectionFactory.videoTrack(with: videoSource, trackId: RTCClientConfig.localVideoTrackId)
+                    
+                    localMediaStream?.addVideoTrack(localVideoTrack!)
+                    
+                    delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: true, audioOnly: RTCClientConfig.audioOnly)
+
+                }else{
+                    print("无法访问相机");
+                    delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: false, audioOnly: RTCClientConfig.audioOnly)
+                }
+
+            }
+        }
+        
+        
+        
     }
     
     func connect(roomId: String){
@@ -58,7 +100,9 @@ class RTCClient: NSObject {
         
         self.roomId = roomId
         socket = WebSocket(url: URL(string: RTCClientConfig.RTC_SERVER_URL + roomId)!)
-        socket?.disableSSLCertValidation = true
+        if !RTCClientConfig.validateSsl{
+            socket?.disableSSLCertValidation = true
+        }
         socket?.delegate = self
         self.socket?.connect()
         
@@ -120,6 +164,11 @@ class RTCClient: NSObject {
         }
         
         sendMessage(event: "join", data: roomId!)
+    }
+    
+    public func disconect(){
+        clearSession()
+        socket?.disconnect()
     }
     
     private func onJoin(roomDescription: JSON) {
@@ -253,6 +302,7 @@ extension RTCClient {
         self.audioMute = false
         self.videoMute = false
     }
+    
 }
 
 extension RTCClient: WebSocketDelegate{
@@ -330,8 +380,6 @@ extension RTCClient: RTCPeerConnectionDelegate{
 
 class RTCPeer {
     
-    fileprivate static let peerConnectionFactory = RTCPeerConnectionFactory()
-
     var peerConnection: RTCPeerConnection
     var peerId: String!
     var type = "video"   //default peer type to video
@@ -403,7 +451,7 @@ class RTCPeer {
         }
         
         let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
-        peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: delegate)
+        peerConnection = RTCFactory.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: delegate)
         
         // handle screensharing/broadcast mode
         if type == "screen" {
@@ -471,7 +519,8 @@ class RTCPeer {
         
         switch type {
         case "offer":
-            peerConnection
+            
+            //TODO: peerConnection
             print(type)
         default:
             assertionFailure("RTCPeer:handleMessage: unknown message type")

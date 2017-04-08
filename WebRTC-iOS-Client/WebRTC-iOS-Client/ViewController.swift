@@ -14,6 +14,9 @@ class ViewController: UIViewController {
     let factory = RTCPeerConnectionFactory()
     let rtcClient = RTCClient()
     
+    var localVideoTrack: RTCVideoTrack?
+    var remoteVideoTracks: [RTCVideoTrack] = [];
+    
     @IBOutlet weak var localVideoView: RTCEAGLVideoView!
     
     override func viewDidLoad() {
@@ -28,9 +31,10 @@ class ViewController: UIViewController {
     }
 
     func addLocalPreview(){
-        let mediaConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         
-        let videoSource = factory.avFoundationVideoSource(with: mediaConstraints)
+        rtcClient.initialize(delegate: self)
+        /*
+        let videoSource = factory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
         let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
         previewLayer?.frame = localVideoView.bounds
         
@@ -42,10 +46,28 @@ class ViewController: UIViewController {
         //let localMediaStream = RTCMediaStream()
         rtcClient.localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
         rtcClient.connect(roomId: "myroom")
-
+        */
         //rtcClient
     }
 
+
+}
+extension ViewController: RTCClientDelegate{
+    
+    func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool){
+        if authorized{
+            if !audioOnly{
+                localVideoTrack = client.localVideoTrack
+                localVideoTrack?.add(localVideoView)
+            }else{
+                assertionFailure("Wrong config")
+            }
+        }else{
+            assertionFailure("Unauthorized to access media device")
+        }
+        
+        
+    }
 
 }
 

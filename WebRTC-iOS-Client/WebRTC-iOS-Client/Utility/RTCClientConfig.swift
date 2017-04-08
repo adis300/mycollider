@@ -10,6 +10,8 @@ import Foundation
 import WebRTC
 
 class RTCClientConfig {
+    
+    // static let SECURE_CONNECTION = false
     static let RTC_SERVER_URL = "wss://localhost:8081/ws/"
     static let STUN_SERVER_URL = "stun:stun.l.google.com:19302"
     static let TURN_SERVER_URL = "https://turn.votebin.com"
@@ -33,7 +35,16 @@ class RTCClientConfig {
     
     static let dataChannelConfiguration = RTCDataChannelConfiguration()
     
+    private static let rtcConfiguration = RTCConfiguration()
     
+    static func getRTCConfiguration(iceServers: [RTCIceServer]?) -> RTCConfiguration {
+        if let servers = iceServers{
+            RTCClientConfig.rtcConfiguration.iceServers = servers
+        }else{
+            RTCClientConfig.rtcConfiguration.iceServers = [RTCIceServer(urlStrings: [RTCClientConfig.STUN_SERVER_URL])]
+        }
+        return RTCClientConfig.rtcConfiguration
+    }
     
 }
 
@@ -72,3 +83,24 @@ class RTCFactory{
         return RTCMediaConstraints(mandatoryConstraints: mediaConstraintsMandatory, optionalConstraints: nil)
     }
 }
+/* Some default stun servers 
+ stun.l.google.com:19302
+ stun1.l.google.com:19302
+ stun2.l.google.com:19302
+ stun3.l.google.com:19302
+ stun4.l.google.com:19302
+ stun01.sipphone.com
+ stun.ekiga.net
+ stun.fwdnet.net
+ stun.ideasip.com
+ stun.iptel.org
+ stun.rixtelecom.se
+ stun.schlund.de
+ stunserver.org
+ stun.softjoys.com
+ stun.voiparound.com
+ stun.voipbuster.com
+ stun.voipstunt.com
+ stun.voxgratia.org
+ stun.xten.com
+ */

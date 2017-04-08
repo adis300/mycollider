@@ -22,19 +22,20 @@ class RTCClient: NSObject {
     
     var socket: WebSocket?
     
-    var iceServers : [String] = []
+    var iceServers : [RTCIceServer] = [] //[String] = []
     
     var roomId: String?
     var sessionId: String?
     
     var sessionReady = false
     
-    var peers:[RTCPeer] = []
+    var peers:[String: RTCPeer] = [:]
+    
     
     fileprivate func filterPeers(peerId: String?, type: String?) -> [RTCPeer]{
-        return peers.filter{(peer) in
-            return (peerId == nil || (peer.peerId == peerId)) && (type == nil || peer.type == type)
-        }
+        return peers.filter{(peerId, peer) in
+            return (peer.peerId == peerId) && (type == nil || peer.type == type)
+            }.map{(key, val) in val}
     }
     
     // Utility properties
@@ -48,6 +49,10 @@ class RTCClient: NSObject {
         }
         
         clearSession()
+        
+        
+        // TODO: Implement? RTCPeerConnectionFactory.initialize()
+        
         self.roomId = roomId
         socket = WebSocket(url: URL(string: RTCClientConfig.RTC_SERVER_URL + roomId)!)
         socket?.disableSSLCertValidation = true
@@ -66,15 +71,16 @@ class RTCClient: NSObject {
                 let data = msg["data"]
                 if let turnServers = data["turnservers"].array{
                     for turnServer in turnServers{
-                        iceServers.append(turnServer["url"].string!)
+                        iceServers.append(RTCIceServer(urlStrings: [turnServer["url"].string!]))
                     }
                 }
                 
                 if let stunServers = data["stunservers"].array{
                     for stunServer in stunServers{
-                        iceServers.append(stunServer["url"].string!)
+                        iceServers.append(RTCIceServer(urlStrings: [stunServer["url"].string!]))
                     }
                 }
+                
                 if let sid = data["sessionid"].string{
                     sessionId = sid
                     sessionReady = true
@@ -127,7 +133,7 @@ class RTCClient: NSObject {
                     let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self, delegate: self)
                     //TODO: self.emit("createdPeer")
                     peer.start()
-                    peers.append(peer)
+                    peers[id] = peer
                 }
             }
         }
@@ -174,7 +180,7 @@ class RTCClient: NSObject {
                         "broadcaster": broadcaster
                         ], parent: self, delegate: self)
                     //TODO: self.emit("createdPeer")
-                    peers.append(peer!)
+                    peers["id"] = peer!
                 }
                 peer?.handleMessage(data)
             }else{
@@ -216,12 +222,14 @@ extension RTCClient {
     }
     
     fileprivate func clearSession(){
-        for peer in peers{
+        for (_, peer) in peers{
             for stream in localMediaStreams{
                 peer.peerConnection.remove(stream)
+                peer.peerConnection.close()
             }
         }
-        peers = []
+        peers = [:]
+        self.iceServers = []
         self.sessionId = nil
         self.sessionReady = false
         self.localVideoTrack = nil
@@ -229,7 +237,6 @@ extension RTCClient {
         self.localMediaStreams = []
         self.socket = nil
         self.roomId = nil
-        self.iceServers = []
         self.audioMute = false
         self.videoMute = false
     }
@@ -383,7 +390,7 @@ class RTCPeer {
         }
         
         let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
-        peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCConfiguration(), constraints: mediaConstraints, delegate: delegate)
+        peerConnection = RTCPeer.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: delegate)
         
         // handle screensharing/broadcast mode
         if type == "screen" {
@@ -406,7 +413,7 @@ class RTCPeer {
             let dataChannel = peerConnection.dataChannel(forLabel: "simplewebrtc", configuration: RTCClientConfig.dataChannelConfiguration)
             // TODO: Make use of dataChannel
         }
-        
+
         peerConnection.offer(for: RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)) { (sessionDescription, error) in
             // TODO: Make use of sessionDescription & err
             if let err = error{

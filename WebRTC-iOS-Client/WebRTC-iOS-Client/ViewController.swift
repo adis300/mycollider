@@ -39,6 +39,7 @@ class ViewController: UIViewController {
         
         localVideoView.layer.addSublayer(previewLayer!)
         
+        //let localMediaStream = RTCMediaStream()
         rtcClient.localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
         rtcClient.connect(roomId: "myroom")
 

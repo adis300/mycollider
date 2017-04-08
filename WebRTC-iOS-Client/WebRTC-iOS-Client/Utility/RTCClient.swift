@@ -18,7 +18,7 @@ class RTCClient: NSObject {
     
     var localAudioTrack: RTCAudioTrack?
 
-    var localMediaStreams: [RTCMediaStream] = []
+    var localMediaStream: RTCMediaStream?
     
     var socket: WebSocket?
     
@@ -40,7 +40,10 @@ class RTCClient: NSObject {
     
     // Utility properties
     // fileprivate var peerConnections:[RTCPeerConnection] = []
-
+    
+    func initialize(localStream: RTCMediaStream){
+        localMediaStream = localStream
+    }
     
     func connect(roomId: String){
         guard localAudioTrack != nil || localVideoTrack != nil else { // localMediaStream != nil && (localAudioTrack != nil || localVideoTrack != nil)
@@ -221,9 +224,19 @@ extension RTCClient {
         }
     }
     
+    fileprivate func removePeer(peerId: String){
+        if let peer = peers[peerId]{
+            if let stream = localMediaStream {
+                peer.peerConnection.remove(stream)
+            }
+            peer.peerConnection.close()
+            peers.removeValue(forKey: peerId)
+        }
+    }
+    
     fileprivate func clearSession(){
         for (_, peer) in peers{
-            for stream in localMediaStreams{
+            if let stream = localMediaStream {
                 peer.peerConnection.remove(stream)
                 peer.peerConnection.close()
             }
@@ -234,7 +247,7 @@ extension RTCClient {
         self.sessionReady = false
         self.localVideoTrack = nil
         self.localAudioTrack = nil
-        self.localMediaStreams = []
+        self.localMediaStream = nil
         self.socket = nil
         self.roomId = nil
         self.audioMute = false
@@ -401,10 +414,7 @@ class RTCPeer {
                 assertionFailure("Screensharing is not yet supported")
             }
         } else {
-            // TODO: Add all local streams
-            for stream in parent.localMediaStreams{
-                peerConnection.add(stream)
-            }
+            peerConnection.add(parent.localMediaStream!)
         }
     }
     

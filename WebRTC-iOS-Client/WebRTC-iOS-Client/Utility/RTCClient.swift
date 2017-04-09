@@ -149,6 +149,9 @@ class RTCClient: NSObject {
             case "message":
                 let data = msg["data"]
                 onMessage(data)
+            case "remove":
+                let peerId = msg["data"]["id"].string!
+                removePeer(peerId: peerId)
             default:
                 assertionFailure("ERROR: Unknown server envent")
             }
@@ -184,7 +187,8 @@ class RTCClient: NSObject {
                     ]
                     let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self)
                     //TODO: self.emit("createdPeer")
-                    peer.startOffer()
+                    peer.start()
+                    peer.sendOffer()
                     peers[id] = peer
                 }
             }
@@ -233,9 +237,11 @@ class RTCClient: NSObject {
                         ], parent: self)
                     //TODO: self.emit("createdPeer")
                     peer?.startAnswer()
+                    
                     peers["id"] = peer!
+                }else{
+                    peer?.handleMessage(data)
                 }
-                peer?.handleMessage(data)
             }else{
                 for p in sessionPeers {
                     let sid = data["sid"].string
@@ -482,11 +488,7 @@ class RTCPeer: NSObject {
         }
     }
     
-    func startAnswer() {
-        // TODO: Impl
-    }
-    
-    func startOffer(){
+    fileprivate func start() {
         let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
         peerConnection = RTCFactory.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: self)
         
@@ -510,9 +512,11 @@ class RTCPeer: NSObject {
             let dataChannel = peerConnection.dataChannel(forLabel: "simplewebrtc", configuration: RTCClientConfig.dataChannelConfiguration)
             // TODO: Make use of dataChannel
         }
+    }
+    
+    fileprivate func sendOffer(){
 
         peerConnection.offer(for: RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)) { (sessionDescription, error) in
-            // TODO: Make use of sessionDescription & err
             if let err = error{
                 print(err.localizedDescription)
                 return
@@ -528,10 +532,25 @@ class RTCPeer: NSObject {
                 assertionFailure("Failed to get session description")
             }
         }
+    }
+    fileprivate func sendAnswer(){
         
-        // this.pc.offer(this.receiveMedia, function(err, sessionDescription) {
-            //self.send('offer', sessionDescription);
-        // });
+        peerConnection.answer(for: RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)) { (sessionDescription, error) in
+            if let err = error{
+                print(err.localizedDescription)
+                return
+            }
+            if let sessionDesc = sessionDescription{
+                self.peerConnection.setLocalDescription(sessionDesc, completionHandler: { (localSdpError) in
+                    if let e = localSdpError{
+                        assertionFailure(e.localizedDescription)
+                    }
+                })
+                self.sendPeerMessage(messageType: "answer", payload: <#T##[String : Any]#>)
+            }else{
+                assertionFailure("Failed to get session description")
+            }
+        }
     }
     
     // MARK: Peer connection active methods
@@ -549,7 +568,8 @@ class RTCPeer: NSObject {
     fileprivate func handleMessage(_ message: JSON){
         // TODO: Implement
         print("RTCPeer:handleMessage:\(message)")
-        
+        let payload = message["payload"]
+
         if let prefix = message["prefix"].string{
             self.browserPrefix = prefix
         }
@@ -561,6 +581,33 @@ class RTCPeer: NSObject {
             
             //TODO: peerConnection
             print(type)
+        case "answer":
+            let remoteSdp = RTCSessionDescription(type: .answer, sdp: payload["sdp"].string!)
+            peerConnection.setRemoteDescription(remoteSdp, completionHandler: { (error) in
+                if let err = error{
+                    print("RTCPeer:onAnswer: failed to set remote description: \(err.localizedDescription)")
+                }
+            })
+        case "candidate":
+            
+            if let _ = parent.peers[message["from"].string!]{
+                let candidateJson = payload["candidate"]
+                var candidateSdp = candidateJson["candidate"].string!
+                candidateSdp = candidateSdp[candidateSdp.index(candidateSdp.startIndex, offsetBy: 10)..<candidateSdp.endIndex]
+                let candidate = RTCIceCandidate(sdp: candidateSdp, sdpMLineIndex: candidateJson["sdpMLineIndex"].int32!, sdpMid: candidateJson["sdpMid"].string!)
+                
+                peerConnection.add(candidate)
+            }else{
+                assertionFailure("Peer not found for answer")
+            }
+        case "endOfCandidates":
+            print("End of candidate received.")
+            /* TODO: Find out about mLine and transceivers.
+            var mLines = this.pc.pc.peerconnection.transceivers || [];
+            mLines.forEach(function(mLine) {
+                if (mLine.iceTransport) mLine.iceTransport.addRemoteCandidate({});
+            });
+            */
         default:
             assertionFailure("RTCPeer:handleMessage: unknown message type")
         }

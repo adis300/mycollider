@@ -45,8 +45,11 @@ class RTCClient: NSObject {
     // fileprivate var peerConnections:[RTCPeerConnection] = []
     
     func initialize(delegate: RTCClientDelegate){
+        
+        clearSession()
+
         self.delegate = delegate
-        localMediaStream = RTCFactory.peerConnectionFactory.mediaStream(withStreamId: RTCClientConfig.localMediaStreamId)
+        self.localMediaStream = RTCFactory.peerConnectionFactory.mediaStream(withStreamId: RTCClientConfig.localMediaStreamId)
         
         // Initialize audio track
         localAudioTrack = RTCFactory.peerConnectionFactory.audioTrack(withTrackId: RTCClientConfig.localAudioTrackId)
@@ -92,9 +95,6 @@ class RTCClient: NSObject {
             assertionFailure("Local media not ready")
             return
         }
-        
-        clearSession()
-        
         
         // TODO: Implement? RTCPeerConnectionFactory.initialize()
         
@@ -182,9 +182,9 @@ class RTCClient: NSObject {
                             "OfferToReceiveVideo": RTCClientConfig.defaultOfferToReceiveVideo
                         ]
                     ]
-                    let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self, delegate: self)
+                    let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self)
                     //TODO: self.emit("createdPeer")
-                    peer.start()
+                    peer.startOffer()
                     peers[id] = peer
                 }
             }
@@ -230,8 +230,9 @@ class RTCClient: NSObject {
                         "enableDataChannels": enableDataChannels,
                         "sharemyscreen": sharemyscreen,
                         "broadcaster": broadcaster
-                        ], parent: self, delegate: self)
+                        ], parent: self)
                     //TODO: self.emit("createdPeer")
+                    peer?.startAnswer()
                     peers["id"] = peer!
                 }
                 peer?.handleMessage(data)
@@ -305,6 +306,7 @@ extension RTCClient {
     
 }
 
+
 extension RTCClient: WebSocketDelegate{
     func websocketDidConnect(socket: WebSocket){
         print("Did connect")
@@ -329,11 +331,11 @@ extension RTCClient: WebSocketDelegate{
     
 }
 
-extension RTCClient: RTCPeerConnectionDelegate{
+extension RTCPeer: RTCPeerConnectionDelegate{
     
     /** Called when the SignalingState changed. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState){
-        print("DEBUG, peer connection state did change")
+        print("DEBUG, peer connection state changed to \(stateChanged.rawValue)")
     }
     
     /** Called when media is received on a new stream from remote peer. */
@@ -348,7 +350,7 @@ extension RTCClient: RTCPeerConnectionDelegate{
     
     /** Called when negotiation is needed, for example ICE has restarted. */
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection){
-        print("DEBUG, peer connection should negotiate")
+        print("DEBUG, peer connection should negotiate, no op")
     }
     
     /** Called any time the IceConnectionState changes. */
@@ -365,6 +367,9 @@ extension RTCClient: RTCPeerConnectionDelegate{
     /** New ice candidate has been found. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate){
         print("DEBUG, peer connection did generate new ICE candidate")
+        print(candidate.sdp)
+        let candidate:[String: Any] = ["candidate":"candidate:" + candidate.sdp,"sdpMid":candidate.sdpMid!,"sdpMLineIndex":candidate.sdpMLineIndex]
+        sendPeerMessage(messageType: "candidate", payload: candidate)
     }
     
     /** Called when a group of local Ice candidates have been removed. */
@@ -376,11 +381,37 @@ extension RTCClient: RTCPeerConnectionDelegate{
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel){
         print("DEBUG, peer connection did open data channel")
     }
+    
+    func sedPeerMessage(messageType: String, payload: String){
+        // send via signalling channel
+        let data: [String: Any]
+        if let broadcaster = self.broadcaster{
+            data = [
+                "to": self.peerId,
+                "sid": self.sid,
+                "broadcaster": broadcaster,
+                "roomType": self.type,
+                "type": messageType,
+                "payload": payload,
+                "prefix": browserPrefix
+            ]
+        }else{
+            data = [
+                "to": self.peerId,
+                "sid": self.sid,
+                "roomType": self.type,
+                "type": messageType,
+                "payload": payload,
+                "prefix": browserPrefix
+            ]
+        }
+        parent.sendMessage(event: "message", data: data)
+    }
 }
 
-class RTCPeer {
+class RTCPeer: NSObject {
     
-    var peerConnection: RTCPeerConnection
+    var peerConnection: RTCPeerConnection!
     var peerId: String!
     var type = "video"   //default peer type to video
     var oneway = false
@@ -414,7 +445,7 @@ class RTCPeer {
     }
     
 
-    init(options: [String: Any?], parent: RTCClient, delegate: RTCPeerConnectionDelegate) {
+    init(options: [String: Any?], parent: RTCClient) {
         
         self.parent = parent
         
@@ -449,9 +480,15 @@ class RTCPeer {
         }else{
             receiveMedia = RTCClientConfig.defaultReceiveMedia
         }
-        
+    }
+    
+    func startAnswer() {
+        // TODO: Impl
+    }
+    
+    func startOffer(){
         let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
-        peerConnection = RTCFactory.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: delegate)
+        peerConnection = RTCFactory.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: self)
         
         // handle screensharing/broadcast mode
         if type == "screen" {
@@ -462,11 +499,13 @@ class RTCPeer {
                 assertionFailure("Screensharing is not yet supported")
             }
         } else {
-            peerConnection.add(parent.localMediaStream!)
+            if let localStream = parent.localMediaStream{
+                peerConnection.add(localStream)
+            }else{
+                assertionFailure("Failed to add local stream, not ready.")
+            }
         }
-    }
-    
-    func start(){
+        
         if (self.enableDataChannels) {
             let dataChannel = peerConnection.dataChannel(forLabel: "simplewebrtc", configuration: RTCClientConfig.dataChannelConfiguration)
             // TODO: Make use of dataChannel
@@ -497,7 +536,7 @@ class RTCPeer {
     
     // MARK: Peer connection active methods
     
-    private func sendPeerMessage(messageType: String, payload:[String : Any]){
+    fileprivate func sendPeerMessage(messageType: String, payload:[String : Any]){
         let message: [String: Any]
         if let broadcaster = self.broadcaster{
             message = ["type": messageType, "to":self.peerId, "sid":self.sid, "broadcaster": broadcaster, "roomType": self.type, "payload": payload, "prefix": self.browserPrefix]

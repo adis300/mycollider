@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -28,19 +28,25 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7" customClass="RTCEAGLVideoView">
                                 <rect key="frame" x="16" y="57" width="343" height="160"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="160" id="ZKM-FU-IHG"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfU-Ex-aPK">
+                                <rect key="frame" x="164" y="318" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V4h-PK-bOH"/>
                             <constraint firstItem="iGV-9C-nlT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="Yrb-P2-aD2"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Lrg-3V-NA7" secondAttribute="trailing" id="a2b-9P-q6U"/>
                             <constraint firstAttribute="leadingMargin" secondItem="Lrg-3V-NA7" secondAttribute="leading" id="fd2-GE-GUL"/>
+                            <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="jjm-tg-nTM"/>
                             <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="vO1-Ah-9I1"/>
                             <constraint firstItem="iGV-9C-nlT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zxc-YE-z9I"/>
                         </constraints>

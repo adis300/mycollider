@@ -30,6 +30,8 @@ class RTCClientConfig {
     
     static let media = ["video":true, "audio" : true]
     
+    static let enableSpeaker = true
+    
     // If loopback
     // static let kDefaultMediaConstraints = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio":"true", "OfferToReceiveVideo" :"true"], optionalConstraints: ["DtlsSrtpKeyAgreement" : "true"])
     
@@ -51,6 +53,19 @@ class RTCClientConfig {
     static let localMediaStreamId = "local_stream"
     static let localAudioTrackId = "local_audio"
     static let localVideoTrackId = "local_video"
+    
+    static func useSpeaker(){
+        do{
+            if RTCClientConfig.enableSpeaker {
+                try AVAudioSession.sharedInstance().overrideOutputAudioPort(.speaker)
+            }else{
+                try AVAudioSession.sharedInstance().overrideOutputAudioPort(.none)
+            }
+        }catch{
+            print(error.localizedDescription)
+        }
+        
+    }
 
 }
 

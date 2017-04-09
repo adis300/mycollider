@@ -54,13 +54,25 @@ class RTCClientConfig {
     static let localAudioTrackId = "local_audio"
     static let localVideoTrackId = "local_video"
     
-    static func useSpeaker(){
+    static func setAudioOutput(enableSpeaker: Bool?){
         do{
-            if RTCClientConfig.enableSpeaker {
+            var use: Bool = false
+            if let useSpeaker = enableSpeaker{
+                if useSpeaker{
+                    use = true
+                }
+            }else{
+                if RTCClientConfig.enableSpeaker {
+                    use = true
+                }
+            }
+            
+            if use {
                 try AVAudioSession.sharedInstance().overrideOutputAudioPort(.speaker)
             }else{
                 try AVAudioSession.sharedInstance().overrideOutputAudioPort(.none)
             }
+            
         }catch{
             print(error.localizedDescription)
         }

@@ -56,9 +56,7 @@ class RTCClient: NSObject {
         localMediaStream?.addAudioTrack(localAudioTrack!)
         
         // let audioDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInMicrophone, mediaType: AVMediaTypeAudio, position: .unspecified)
-        
-        RTCClientConfig.useSpeaker()
-        
+                
         if RTCClientConfig.audioOnly{
             delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: true, audioOnly: RTCClientConfig.audioOnly)
         }else{

@@ -135,5 +135,7 @@ protocol RTCClientDelegate {
     
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool)
 
+    func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool)
+
 }
 

@@ -345,6 +345,7 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     
     /** Called when media is received on a new stream from remote peer. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
+        parent.delegate?.rtcClientDidAddRemoteMediaStream(client: parent, peerConnection:peerConnection, stream: stream, audioOnly: RTCClientConfig.audioOnly)
         print("DEBUG, peer connection did add stream")
     }
     

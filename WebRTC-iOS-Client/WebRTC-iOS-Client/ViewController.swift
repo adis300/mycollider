@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     var localVideoTrack: RTCVideoTrack?
     var remoteVideoTracks: [RTCVideoTrack] = [];
     
+    @IBOutlet weak var removeVideoView: RTCEAGLVideoView!
     @IBOutlet weak var localVideoView: RTCEAGLVideoView!
     
     override func viewDidLoad() {
@@ -83,6 +84,11 @@ extension ViewController: RTCClientDelegate{
             assertionFailure("Unauthorized to access media device")
         }
         
+    }
+    
+    func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool){
+        stream.videoTracks.first!.add(removeVideoView)
+        removeVideoView.renderFrame(nil)
     }
 
 }

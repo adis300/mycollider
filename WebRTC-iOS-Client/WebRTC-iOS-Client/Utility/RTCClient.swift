@@ -236,12 +236,11 @@ class RTCClient: NSObject {
                         "broadcaster": broadcaster
                         ], parent: self)
                     //TODO: self.emit("createdPeer")
-                    peer?.startAnswer()
-                    
+                    peer?.start()
                     peers["id"] = peer!
-                }else{
-                    peer?.handleMessage(data)
                 }
+                peer?.handleMessage(data)
+                
             }else{
                 for p in sessionPeers {
                     let sid = data["sid"].string
@@ -374,7 +373,7 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate){
         print("DEBUG, peer connection did generate new ICE candidate")
         print(candidate.sdp)
-        let candidate:[String: Any] = ["candidate":"candidate:" + candidate.sdp,"sdpMid":candidate.sdpMid!,"sdpMLineIndex":candidate.sdpMLineIndex]
+        let candidate:[String: Any] = ["candidate":candidate.sdp,"sdpMid":candidate.sdpMid!,"sdpMLineIndex":candidate.sdpMLineIndex]
         sendPeerMessage(messageType: "candidate", payload: candidate)
     }
     
@@ -537,7 +536,7 @@ class RTCPeer: NSObject {
         
         peerConnection.answer(for: RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)) { (sessionDescription, error) in
             if let err = error{
-                print(err.localizedDescription)
+                assertionFailure(err.localizedDescription)
                 return
             }
             if let sessionDesc = sessionDescription{
@@ -546,7 +545,7 @@ class RTCPeer: NSObject {
                         assertionFailure(e.localizedDescription)
                     }
                 })
-                self.sendPeerMessage(messageType: "answer", payload: <#T##[String : Any]#>)
+                self.sendPeerMessage(messageType: "answer", payload: ["type":"answer", "sdp": sessionDesc.sdp])
             }else{
                 assertionFailure("Failed to get session description")
             }
@@ -578,9 +577,13 @@ class RTCPeer: NSObject {
         
         switch type {
         case "offer":
-            
-            //TODO: peerConnection
-            print(type)
+            let remoteSdp = RTCSessionDescription(type: .offer, sdp: payload["sdp"].string!)
+            peerConnection.setRemoteDescription(remoteSdp, completionHandler: { (error) in
+                if let err = error{
+                    assertionFailure("RTCPeer:onAnswer: failed to set remote description: \(err.localizedDescription)")
+                }
+            })
+            sendAnswer()
         case "answer":
             let remoteSdp = RTCSessionDescription(type: .answer, sdp: payload["sdp"].string!)
             peerConnection.setRemoteDescription(remoteSdp, completionHandler: { (error) in
@@ -592,8 +595,7 @@ class RTCPeer: NSObject {
             
             if let _ = parent.peers[message["from"].string!]{
                 let candidateJson = payload["candidate"]
-                var candidateSdp = candidateJson["candidate"].string!
-                candidateSdp = candidateSdp[candidateSdp.index(candidateSdp.startIndex, offsetBy: 10)..<candidateSdp.endIndex]
+                let candidateSdp = candidateJson["candidate"].string!
                 let candidate = RTCIceCandidate(sdp: candidateSdp, sdpMLineIndex: candidateJson["sdpMLineIndex"].int32!, sdpMid: candidateJson["sdpMid"].string!)
                 
                 peerConnection.add(candidate)

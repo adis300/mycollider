@@ -57,14 +57,23 @@ extension ViewController: RTCClientDelegate{
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool){
         if authorized{
             if !audioOnly{
+                
+                let videoSource = factory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
+                let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
+                previewLayer?.frame = localVideoView.bounds
+                                
+                localVideoView.layer.addSublayer(previewLayer!)
+                
                 localVideoTrack = client.localVideoTrack
-                // let localView = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-                // localView.backgroundColor = UIColor.red
+                localVideoTrack?.add(localVideoView)
+
+                /*
+                localVideoTrack = client.localVideoTrack
                 localVideoTrack?.remove(localVideoView)
                 localVideoView.renderFrame(nil)
                 
                 localVideoTrack?.add(localVideoView)
-                print("ADDED renderer")
+                */
                 client.connect(roomId: "abc")
 
             }else{

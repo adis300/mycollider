@@ -374,7 +374,7 @@ extension RTCPeer: RTCPeerConnectionDelegate{
         print("DEBUG, peer connection did generate new ICE candidate")
         print(candidate.sdp)
         let candidate:[String: Any] = ["candidate":candidate.sdp,"sdpMid":candidate.sdpMid!,"sdpMLineIndex":candidate.sdpMLineIndex]
-        sendPeerMessage(messageType: "candidate", payload: candidate)
+        sendPeerMessage(messageType: "candidate", payload: ["candidate":candidate])
     }
     
     /** Called when a group of local Ice candidates have been removed. */

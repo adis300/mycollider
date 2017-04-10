@@ -83,7 +83,16 @@ class RTCClientConfig {
 
 class RTCFactory{
     
-    static let peerConnectionFactory = RTCPeerConnectionFactory()
+    private static var peerConnectionFactory: RTCPeerConnectionFactory? = nil
+    static func getPeerConnectionFactory() -> RTCPeerConnectionFactory{
+        if let factory = peerConnectionFactory{
+            return factory
+        }else{
+            RTCPeerConnectionFactory.initialize()
+            peerConnectionFactory = RTCPeerConnectionFactory()
+            return peerConnectionFactory!
+        }
+    }
 
     static func getMediaConstraints(receiveMedia: [String: Any]?) -> RTCMediaConstraints{
         

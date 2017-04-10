@@ -11,7 +11,6 @@ import WebRTC
 
 class ViewController: UIViewController {
 
-    let factory = RTCPeerConnectionFactory()
     let rtcClient = RTCClient()
     
     var localVideoTrack: RTCVideoTrack?
@@ -65,6 +64,7 @@ extension ViewController: RTCClientDelegate{
         if authorized{
             if !audioOnly{
                 
+                /*
                 let videoSource = factory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
                 let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
                 previewLayer?.frame = localVideoView.bounds
@@ -73,13 +73,13 @@ extension ViewController: RTCClientDelegate{
                 
                 localVideoTrack = client.localVideoTrack
                 localVideoTrack?.add(localVideoView)
-
-                /*
+                */
+                
                 localVideoTrack = client.localVideoTrack
-                localVideoTrack?.remove(localVideoView)
+                // localVideoTrack?.remove(localVideoView)
                 
                 localVideoTrack?.add(localVideoView)
-                */
+ 
                 client.connect(roomId: "abc")
 
             }else{

@@ -3,7 +3,7 @@
 //  WebRTC-iOS-Client
 //
 //  Created by Innovation on 3/30/17.
-//  Copyright © 2017 Innovation. All rights reserved.
+//  Copyright © 2017 Disi A. All rights reserved.
 //
 
 import UIKit
@@ -56,9 +56,7 @@ extension ViewController: RTCClientDelegate{
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool){
         if authorized{
             if !audioOnly{
-                
                 client.localVideoTrack?.add(localVideoView)
- 
                 client.connect(roomId: "abc")
 
             }else{
@@ -71,7 +69,6 @@ extension ViewController: RTCClientDelegate{
     }
     
     func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool){
-        // remoteVideoView.renderFrame(nil)
         remoteVideoTrack = stream.videoTracks.first
         stream.videoTracks.first?.add(remoteVideoView)
         RTCClientConfig.setAudioOutput(enableSpeaker: useSpeaker)

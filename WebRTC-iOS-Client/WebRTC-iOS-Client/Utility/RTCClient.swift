@@ -62,10 +62,9 @@ class RTCClient: NSObject {
             delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: true, audioOnly: RTCClientConfig.audioOnly)
         }else{
             
-            
             let authStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
             if authStatus == .restricted || authStatus == .denied {
-                print("相机访问受限");
+                print("RTCClient:Initialize:Camera authorization denied");
                 delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: false, audioOnly: RTCClientConfig.audioOnly)
             }else{
                 
@@ -78,7 +77,7 @@ class RTCClient: NSObject {
                     delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: true, audioOnly: RTCClientConfig.audioOnly)
 
                 }else{
-                    print("无法访问相机");
+                    print("RTCClient:Initialize:Camera unavailable on this device");
                     delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: false, audioOnly: RTCClientConfig.audioOnly)
                 }
 
@@ -90,13 +89,15 @@ class RTCClient: NSObject {
     }
     
     func connect(roomId: String){
-        guard localAudioTrack != nil || localVideoTrack != nil else { // localMediaStream != nil && (localAudioTrack != nil || localVideoTrack != nil)
-            assertionFailure("Local media not ready")
+        guard delegate != nil else {
+            assertionFailure("RTCClient:Not initialized, please call rtcClient.initialize(delegate)")
             return
         }
-        
-        // TODO: Implement? RTCPeerConnectionFactory.initialize()
-        
+        guard  localMediaStream != nil && (localAudioTrack != nil || localVideoTrack != nil) else {
+            assertionFailure("RTCClient:Local media not ready")
+            return
+        }
+                
         self.roomId = roomId
         socket = WebSocket(url: URL(string: RTCClientConfig.RTC_SERVER_URL + roomId)!)
         if !RTCClientConfig.validateSsl{

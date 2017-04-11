@@ -88,7 +88,7 @@ class RTCFactory{
         if let factory = peerConnectionFactory{
             return factory
         }else{
-            RTCPeerConnectionFactory.initialize()
+            // RTCPeerConnectionFactory.initialize()
             peerConnectionFactory = RTCPeerConnectionFactory()
             return peerConnectionFactory!
         }

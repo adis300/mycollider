@@ -64,7 +64,9 @@ extension ViewController: RTCClientDelegate{
     }
     
     func rtcClientDidAddRemoteMediaStream(peer: RTCPeer, stream: RTCMediaStream, audioOnly: Bool){
-        peer.setRemoteVideoContainer(view: remoteVideoContainer)
+        if !audioOnly{
+            peer.setRemoteVideoContainer(view: remoteVideoContainer)
+        }
     }
 }
 

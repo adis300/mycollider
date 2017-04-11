@@ -116,13 +116,15 @@ class RTCClient: NSObject {
     }
     
     func setVideo(on: Bool){
-        localVideoTrack?.isEnabled = on
+        localVideoTrack?.isEnabled = on && !RTCClientConfig.audioOnly
     }
     
     func setLocalVideoContainer(view: UIView){
-        let videoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
-        view.addSubview(videoRenderer)
-        localVideoTrack?.add(videoRenderer)
+        if !RTCClientConfig.audioOnly{
+            let videoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+            view.addSubview(videoRenderer)
+            localVideoTrack?.add(videoRenderer)
+        }
     }
     
     fileprivate func handleServerMessage(msg: JSON){
@@ -197,9 +199,9 @@ class RTCClient: NSObject {
             for (type, typeEnabled) in clientResource{
                 if typeEnabled.boolValue {
                     let receiveMedia = [
-                        "mandatory":[
+                        "mandatory": [
                             "OfferToReceiveAudio": type != "screen" && RTCClientConfig.defaultOfferToReceiveAudio,
-                            "OfferToReceiveVideo": RTCClientConfig.defaultOfferToReceiveVideo
+                            "OfferToReceiveVideo": RTCClientConfig.defaultOfferToReceiveVideo && type != "audio"
                         ]
                     ]
                     let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self)
@@ -332,8 +334,8 @@ extension RTCClient {
         self.localMediaStream = nil
         self.socket = nil
         self.roomId = nil
-        self.audioEnabled = true
-        self.videoEnabled = true
+        self.audioEnabled = RTCClientConfig.defaultOfferToReceiveAudio
+        self.videoEnabled = RTCClientConfig.defaultOfferToReceiveVideo
     }
     
 }
@@ -374,7 +376,9 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
         
         print("RTCPeer:RTCPeerConnectionDelegate: peer connection did add stream")
-        remoteVideoTrack = stream.videoTracks.first
+        if !RTCClientConfig.audioOnly{
+            remoteVideoTrack = stream.videoTracks.first
+        }
         DispatchQueue.main.async {
             self.parent.delegate?.rtcClientDidAddRemoteMediaStream(peer: self, stream: stream, audioOnly: RTCClientConfig.audioOnly)
         }
@@ -526,10 +530,12 @@ class RTCPeer: NSObject {
     }
     
     func setRemoteVideoContainer(view: UIView){
-        remoteVideoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
-        remoteVideoTrack?.add(remoteVideoRenderer!)
-        DispatchQueue.main.async {
-            view.addSubview(self.remoteVideoRenderer!)
+        if !RTCClientConfig.audioOnly{
+            remoteVideoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+            remoteVideoTrack?.add(remoteVideoRenderer!)
+            DispatchQueue.main.async {
+                view.addSubview(self.remoteVideoRenderer!)
+            }
         }
     }
     

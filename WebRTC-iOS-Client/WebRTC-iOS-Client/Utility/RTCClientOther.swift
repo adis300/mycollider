@@ -17,7 +17,7 @@ class RTCClientConfig {
     static let TURN_SERVER_URL = "https://turn.votebin.com"
     static let validateSsl = false
     
-    static let audioOnly = true
+    static let audioOnly = false
     // Default Configs
     static let defaultOfferToReceiveAudio = true
     static let defaultOfferToReceiveVideo = !audioOnly

@@ -30,7 +30,7 @@ class RTCClientConfig {
     
     static let media = ["video":true, "audio" : true]
     
-    static let enableSpeaker = true
+    static let useSpeaker = true
     
     // If loopback
     // static let kDefaultMediaConstraints = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio":"true", "OfferToReceiveVideo" :"true"], optionalConstraints: ["DtlsSrtpKeyAgreement" : "true"])
@@ -54,15 +54,15 @@ class RTCClientConfig {
     static let localAudioTrackId = "local_audio"
     static let localVideoTrackId = "local_video"
     
-    static func setAudioOutput(enableSpeaker: Bool?){
+    static func setAudioOutput(useSpeaker: Bool?){
         do{
             var use: Bool = false
-            if let useSpeaker = enableSpeaker{
+            if let useSpeaker = useSpeaker{
                 if useSpeaker{
                     use = true
                 }
             }else{
-                if RTCClientConfig.enableSpeaker {
+                if RTCClientConfig.useSpeaker {
                     use = true
                 }
             }
@@ -88,7 +88,6 @@ class RTCFactory{
         if let factory = peerConnectionFactory{
             return factory
         }else{
-            // RTCPeerConnectionFactory.initialize()
             peerConnectionFactory = RTCPeerConnectionFactory()
             return peerConnectionFactory!
         }
@@ -133,28 +132,33 @@ class RTCFactory{
         
         return RTCMediaConstraints(mandatoryConstraints: mediaConstraintsMandatory, optionalConstraints: nil)
     }
+    
+    /* Some free public stun servers */
+    static func alternativeStunServers() -> [RTCIceServer]{
+        return [
+            RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"]),
+            RTCIceServer(urlStrings: ["stun:stun1.l.google.com:19302"]),
+            RTCIceServer(urlStrings: ["stun:stun2.l.google.com:19302"]),
+            RTCIceServer(urlStrings: ["stun:stun3.l.google.com:19302"]),
+            RTCIceServer(urlStrings: ["stun:stun4.l.google.com:19302"]),
+            RTCIceServer(urlStrings: ["stun:stun01.sipphone.com"]),
+            RTCIceServer(urlStrings: ["stun:stun.ekiga.net"]),
+            RTCIceServer(urlStrings: ["stun:stun.fwdnet.net"]),
+            RTCIceServer(urlStrings: ["stun:stun.ideasip.com"]),
+            RTCIceServer(urlStrings: ["stun:stun.iptel.org"]),
+            RTCIceServer(urlStrings: ["stun:stun.iptel.org"]),
+            RTCIceServer(urlStrings: ["stun:stun.rixtelecom.se"]),
+            RTCIceServer(urlStrings: ["stun:stun.schlund.de"]),
+            RTCIceServer(urlStrings: ["stun:stunserver.org"]),
+            RTCIceServer(urlStrings: ["stun:stun.softjoys.com"]),
+            RTCIceServer(urlStrings: ["stun:stun.voiparound.com"]),
+            RTCIceServer(urlStrings: ["stun:stun.voipbuster.com"]),
+            RTCIceServer(urlStrings: ["stun:stun.voipstunt.com"]),
+            RTCIceServer(urlStrings: ["stun:stun.voxgratia.org"]),
+            RTCIceServer(urlStrings: ["stun:stun.xten.com"])
+        ]
+    }
 }
-/* Some default stun servers 
- stun.l.google.com:19302
- stun1.l.google.com:19302
- stun2.l.google.com:19302
- stun3.l.google.com:19302
- stun4.l.google.com:19302
- stun01.sipphone.com
- stun.ekiga.net
- stun.fwdnet.net
- stun.ideasip.com
- stun.iptel.org
- stun.rixtelecom.se
- stun.schlund.de
- stunserver.org
- stun.softjoys.com
- stun.voiparound.com
- stun.voipbuster.com
- stun.voipstunt.com
- stun.voxgratia.org
- stun.xten.com
- */
 
 protocol RTCClientDelegate {
     
@@ -169,6 +173,7 @@ protocol RTCClientDelegate {
 
 }
 
+// Default optional delegate methods
 extension RTCClientDelegate{
     func rtcRemotePeerDidChangeAudioState(peer: RTCPeer, on: Bool){
         print("RTCClientDelegate:rtcRemotePeerDidChangeAudioState:empty")

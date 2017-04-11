@@ -29,10 +29,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7" customClass="RTCEAGLVideoView">
-                                <rect key="frame" x="16" y="57" width="343" height="160"/>
+                                <rect key="frame" x="107.5" y="57" width="160" height="253"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="160" id="ZKM-FU-IHG"/>
+                                    <constraint firstAttribute="width" constant="160" id="34s-Pc-jcp"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfU-Ex-aPK">
@@ -50,15 +50,15 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="7lQ-oh-V5D" secondAttribute="bottom" constant="20" id="4KZ-Jg-bZK"/>
+                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="CcO-fB-aJk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="7lQ-oh-V5D" secondAttribute="trailing" id="F6V-8m-FhF"/>
                             <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V4h-PK-bOH"/>
                             <constraint firstItem="iGV-9C-nlT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="Yrb-P2-aD2"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Lrg-3V-NA7" secondAttribute="trailing" id="a2b-9P-q6U"/>
                             <constraint firstItem="7lQ-oh-V5D" firstAttribute="top" secondItem="kfU-Ex-aPK" secondAttribute="bottom" constant="8" id="ajR-O7-C2g"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="Lrg-3V-NA7" secondAttribute="leading" id="fd2-GE-GUL"/>
                             <constraint firstAttribute="leadingMargin" secondItem="7lQ-oh-V5D" secondAttribute="leading" id="iI3-99-0y4"/>
                             <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="jjm-tg-nTM"/>
-                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="vO1-Ah-9I1"/>
+                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nx0-BJ-oqN"/>
+                            <constraint firstItem="kfU-Ex-aPK" firstAttribute="top" secondItem="Lrg-3V-NA7" secondAttribute="bottom" constant="8" id="p3t-U1-Nuw"/>
                             <constraint firstItem="iGV-9C-nlT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zxc-YE-z9I"/>
                         </constraints>
                     </view>

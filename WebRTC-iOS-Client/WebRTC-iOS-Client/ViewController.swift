@@ -47,7 +47,7 @@ class ViewController: UIViewController {
     @IBAction func toggleSpeaker(_ sender: Any) {
         useSpeaker = !useSpeaker
         
-        RTCClientConfig.setAudioOutput(enableSpeaker: useSpeaker)
+        RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
     }
 
 }
@@ -71,7 +71,7 @@ extension ViewController: RTCClientDelegate{
     func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool){
         remoteVideoTrack = stream.videoTracks.first
         stream.videoTracks.first?.add(remoteVideoView)
-        RTCClientConfig.setAudioOutput(enableSpeaker: useSpeaker)
+        RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
 
     }
     

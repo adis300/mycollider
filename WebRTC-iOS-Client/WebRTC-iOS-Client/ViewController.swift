@@ -45,7 +45,6 @@ class ViewController: UIViewController {
 
     @IBAction func toggleSpeaker(_ sender: Any) {
         useSpeaker = !useSpeaker
-        
         RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
     }
 
@@ -56,11 +55,8 @@ extension ViewController: RTCClientDelegate{
         if authorized{
             if !audioOnly{
                 client.setLocalVideoContainer(view: localVideoContainer)
-                client.connect(roomId: "abc")
-
-            }else{
-                assertionFailure("Wrong config")
             }
+            client.connect(roomId: "abc")
         }else{
             assertionFailure("Unauthorized to access media device")
         }

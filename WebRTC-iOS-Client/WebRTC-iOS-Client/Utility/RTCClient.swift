@@ -69,9 +69,11 @@ class RTCClient: NSObject {
                 delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: false, audioOnly: RTCClientConfig.audioOnly)
             }else{
                 
-                if let _ = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front){
+                if let _ = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .back){
                     let videoSource = RTCFactory.getPeerConnectionFactory().avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
                     localVideoTrack = RTCFactory.getPeerConnectionFactory().videoTrack(with: videoSource, trackId: RTCClientConfig.localVideoTrackId)
+                    
+                    
                     
                     localMediaStream?.addVideoTrack(localVideoTrack!)
                     
@@ -201,7 +203,7 @@ class RTCClient: NSObject {
                         ]
                     ]
                     let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self)
-                    //TODO: self.emit("createdPeer")
+
                     peer.start()
                     peer.sendOffer()
                     peers[id] = peer
@@ -250,7 +252,7 @@ class RTCClient: NSObject {
                         "sharemyscreen": sharemyscreen,
                         "broadcaster": broadcaster
                         ], parent: self)
-                    //TODO: self.emit("createdPeer")
+
                     peer?.start()
                     peers["id"] = peer!
                 }
@@ -541,7 +543,7 @@ class RTCPeer: NSObject {
                 print("adding local screen stream to peer connection");
                 // peerConnection.add(<#T##stream: RTCMediaStream##RTCMediaStream#>) // Add a local screen
                 // broadcaster = opt["broadcaster"] as! String
-                assertionFailure("Screensharing is not yet supported")
+                assertionFailure("TODO: Screensharing is not yet supported")
             }
         } else {
             if let localStream = parent.localMediaStream{
@@ -615,7 +617,7 @@ class RTCPeer: NSObject {
     }
     
     fileprivate func handleMessage(_ message: JSON){
-        // TODO: Implement
+
         print("RTCPeer:handleMessage:\(message)")
         let payload = message["payload"]
 
@@ -682,42 +684,6 @@ class RTCPeer: NSObject {
         default:
             assertionFailure("RTCPeer:handleMessage: unknown message type")
         }
-        /*
-        if (message.prefix) this.browserPrefix = message.prefix;
-        
-        if (message.type === 'offer') {
-            if (!this.nick) this.nick = message.payload.nick;
-            delete message.payload.nick;
-            this.pc.handleOffer(message.payload, function(err) {
-            if (err) {
-            return;
-            }
-            // auto-accept
-            self.pc.answer(function(err, sessionDescription) {
-            //self.send('answer', sessionDescription);
-            });
-            });
-        } else if (message.type === 'answer') {
-            if (!this.nick) this.nick = message.payload.nick;
-            delete message.payload.nick;
-            this.pc.handleAnswer(message.payload);
-        } else if (message.type === 'candidate') {
-            this.pc.processIce(message.payload);
-        } else if (message.type === 'connectivityError') {
-            this.parent.emit('connectivityError', self);
-        } else if (message.type === 'mute') {
-            this.parent.emit('mute', { id: message.from, name: message.payload.name });
-        } else if (message.type === 'unmute') {
-            this.parent.emit('unmute', { id: message.from, name: message.payload.name });
-        } else if (message.type === 'endOfCandidates') {
-            console.log("Peer connection");
-            console.log(this.pc);
-            var mLines = this.pc.pc.peerconnection.transceivers || [];
-            mLines.forEach(function(mLine) {
-                if (mLine.iceTransport) mLine.iceTransport.addRemoteCandidate({});
-            });
-        }
-        */
     }
 }
 

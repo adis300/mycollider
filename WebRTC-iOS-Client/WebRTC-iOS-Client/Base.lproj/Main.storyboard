@@ -49,6 +49,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EPB-Eu-xgQ">
                                 <rect key="frame" x="16" y="57" width="40" height="30"/>
                                 <state key="normal" title="Audio"/>
+                                <connections>
+                                    <action selector="audioSwitchClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xUb-aZ-Veo"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2n2-tH-KTs">
                                 <rect key="frame" x="321" y="57" width="38" height="30"/>

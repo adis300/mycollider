@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     var audioSwitch = true
     
     @IBOutlet weak var remoteVideoView: RTCEAGLVideoView!
-    @IBOutlet weak var localVideoView: RTCEAGLVideoView!
+    @IBOutlet weak var localVideoContainer: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,22 +38,7 @@ class ViewController: UIViewController {
     }
     
     func joinRoom(){
-        
         rtcClient.connect(roomId: "abc")
-
-        /*
-        let videoSource = factory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
-        let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
-        previewLayer?.frame = localVideoView.bounds
-        
-        // localVideoTrack?.add(localVideoView)
-        
-        localVideoView.layer.addSublayer(previewLayer!)
-        
-        //let localMediaStream = RTCMediaStream()
-        rtcClient.localVideoTrack = factory.videoTrack(with: videoSource, trackId: "localVideoTrack")
-        */
-        //rtcClient
     }
 
     @IBAction func toggleSpeaker(_ sender: Any) {
@@ -68,7 +53,7 @@ extension ViewController: RTCClientDelegate{
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool){
         if authorized{
             if !audioOnly{
-                client.localVideoTrack?.add(localVideoView)
+                client.setLocalVideoContainer(view: localVideoContainer)
                 client.connect(roomId: "abc")
 
             }else{

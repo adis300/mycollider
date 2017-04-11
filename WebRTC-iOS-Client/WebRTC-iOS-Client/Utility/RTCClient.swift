@@ -34,6 +34,7 @@ class RTCClient: NSObject {
     fileprivate(set) var peers:[String: RTCPeer] = [:]
     
     var delegate: RTCClientDelegate?
+    fileprivate var localVideoRenderer: RTCEAGLVideoView?
     
     fileprivate func filterPeers(peerId: String?, type: String?) -> [RTCPeer]{
         return peers.filter{(peerId, peer) in
@@ -114,6 +115,12 @@ class RTCClient: NSObject {
     
     func setVideo(on: Bool){
         localVideoTrack?.isEnabled = on
+    }
+    
+    func setLocalVideoContainer(view: UIView){
+        let videoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        view.addSubview(videoRenderer)
+        localVideoTrack?.add(videoRenderer)
     }
     
     fileprivate func handleServerMessage(msg: JSON){
@@ -292,6 +299,11 @@ extension RTCClient {
             if let stream = localMediaStream {
                 peer.peerConnection.remove(stream)
             }
+            // Remove renderers
+            if let remoteVideoRenderer = peer.remoteVideoRenderer{
+                remoteVideoRenderer.removeFromSuperview()
+                peer.remoteVideoTrack?.remove(remoteVideoRenderer)
+            }
             peer.peerConnection.close()
             peers.removeValue(forKey: peerId)
         }
@@ -303,6 +315,11 @@ extension RTCClient {
                 peer.peerConnection.remove(stream)
                 peer.peerConnection.close()
             }
+        }
+        if let localRenderer = self.localVideoRenderer {
+            localRenderer.removeFromSuperview()
+            localVideoTrack?.remove(localRenderer)
+            localVideoRenderer = nil
         }
         peers = [:]
         self.iceServers = []
@@ -348,7 +365,7 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     
     /** Called when the SignalingState changed. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState){
-        print("DEBUG, peer connection state changed to \(stateChanged.rawValue)")
+        print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection state changed to \(stateChanged.rawValue)")
     }
     
     /** Called when media is received on a new stream from remote peer. */
@@ -356,46 +373,49 @@ extension RTCPeer: RTCPeerConnectionDelegate{
         
         remoteVideoTrack = stream.videoTracks.first
         parent.delegate?.rtcClientDidAddRemoteMediaStream(client: parent, peerConnection:peerConnection, stream: stream, audioOnly: RTCClientConfig.audioOnly)
-        print("DEBUG, peer connection did add stream")
+        print("RTCPeer:RTCPeerConnectionDelegate: peer connection did add stream")
     }
     
     /** Called when a remote peer closes a stream. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream){
-        print("DEBUG, peer connection did remove stream")
+        print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection did remove stream")
     }
     
     /** Called when negotiation is needed, for example ICE has restarted. */
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection){
-        print("DEBUG, peer connection should negotiate, no op")
+        print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection should negotiate, no op")
     }
     
     /** Called any time the IceConnectionState changes. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState){
-        print("DEBUG, peer connection ice state did change")
+        if newState == .failed {
+            sendPeerMessage(messageType: "connectivityError", payload: nil)
+        }
+        print("RTCPeer:RTCPeerConnectionDelegate: peer connection ice state did change")
     }
     
     
     /** Called any time the IceGatheringState changes. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState){
-        print("DEBUG, peer connection ice gathering state did change")
+        print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection ice gathering state did change")
     }
     
     /** New ice candidate has been found. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate){
-        print("DEBUG, peer connection did generate new ICE candidate")
         print(candidate.sdp)
         let candidate:[String: Any] = ["candidate":candidate.sdp,"sdpMid":candidate.sdpMid!,"sdpMLineIndex":candidate.sdpMLineIndex]
         sendPeerMessage(messageType: "candidate", payload: ["candidate":candidate])
+        print("RTCPeer:RTCPeerConnectionDelegate: peer connection did generate new ICE candidate")
     }
     
     /** Called when a group of local Ice candidates have been removed. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]){
-        print("DEBUG, peer connection did remove candidates")
+        print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection did remove candidates")
     }
     
     /** New data channel has been opened. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel){
-        print("DEBUG, peer connection did open data channel")
+        print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection did open data channel")
     }
     
     func sedPeerMessage(messageType: String, payload: String){
@@ -442,6 +462,7 @@ class RTCPeer: NSObject {
     var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
     let parent: RTCClient
     var remoteVideoTrack: RTCVideoTrack?
+    fileprivate var remoteVideoRenderer: RTCEAGLVideoView?
     
     private func getReceiveMedia () -> [String: Any]{
         
@@ -497,6 +518,12 @@ class RTCPeer: NSObject {
         }else{
             receiveMedia = RTCClientConfig.defaultReceiveMedia
         }
+    }
+    
+    func setRemoteVideoContainer(view: UIView){
+        remoteVideoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        view.addSubview(remoteVideoRenderer!)
+        remoteVideoTrack?.add(remoteVideoRenderer!)
     }
     
     fileprivate func start() {
@@ -566,13 +593,19 @@ class RTCPeer: NSObject {
     
     // MARK: Peer connection active methods
     
-    fileprivate func sendPeerMessage(messageType: String, payload:[String : Any]){
-        let message: [String: Any]
+    fileprivate func sendPeerMessage(messageType: String, payload:[String : Any]?){
+        var message: [String: Any]
+        
         if let broadcaster = self.broadcaster{
-            message = ["type": messageType, "to":self.peerId, "sid":self.sid, "broadcaster": broadcaster, "roomType": self.type, "payload": payload, "prefix": self.browserPrefix]
+            message = ["type": messageType, "to":self.peerId, "sid":self.sid, "broadcaster": broadcaster, "roomType": self.type, "prefix": self.browserPrefix]
         }else{
-            message = ["type": messageType, "to":self.peerId, "sid":self.sid, "roomType": self.type, "payload": payload, "prefix": self.browserPrefix]
+            message = ["type": messageType, "to":self.peerId, "sid":self.sid, "roomType": self.type, "prefix": self.browserPrefix]
         }
+        
+        if let msgPayload = payload{
+            message["payload"] = msgPayload
+        }
+        
         parent.sendMessage(event: "message", data: message)
     }
     
@@ -638,6 +671,9 @@ class RTCPeer: NSObject {
             }else{
                 assertionFailure("ERROR:Unknown media type to unmute")
             }
+        case "connectivityError":
+            parent.delegate?.rtcRemotePeerFailedToGenerateIceCandidate(peer: self)
+
         default:
             assertionFailure("RTCPeer:handleMessage: unknown message type")
         }

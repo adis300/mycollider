@@ -28,7 +28,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7" customClass="RTCEAGLVideoView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7">
                                 <rect key="frame" x="107.5" y="57" width="160" height="253"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -78,7 +78,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="localVideoView" destination="Lrg-3V-NA7" id="F5P-kH-oXF"/>
+                        <outlet property="localVideoContainer" destination="Lrg-3V-NA7" id="YvQ-QN-rUI"/>
                         <outlet property="remoteVideoView" destination="7lQ-oh-V5D" id="cdh-RE-1Ch"/>
                     </connections>
                 </viewController>

@@ -22,13 +22,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-
-        localVideoView.backgroundColor = UIColor.black
-        
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
         rtcClient.initialize(delegate: self)
     }
 

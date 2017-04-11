@@ -371,9 +371,11 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     /** Called when media is received on a new stream from remote peer. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
         
-        remoteVideoTrack = stream.videoTracks.first
-        parent.delegate?.rtcClientDidAddRemoteMediaStream(client: parent, peerConnection:peerConnection, stream: stream, audioOnly: RTCClientConfig.audioOnly)
         print("RTCPeer:RTCPeerConnectionDelegate: peer connection did add stream")
+        remoteVideoTrack = stream.videoTracks.first
+        DispatchQueue.main.async {
+            self.parent.delegate?.rtcClientDidAddRemoteMediaStream(peer: self, stream: stream, audioOnly: RTCClientConfig.audioOnly)
+        }
     }
     
     /** Called when a remote peer closes a stream. */
@@ -462,6 +464,7 @@ class RTCPeer: NSObject {
     var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
     let parent: RTCClient
     var remoteVideoTrack: RTCVideoTrack?
+    
     fileprivate var remoteVideoRenderer: RTCEAGLVideoView?
     
     private func getReceiveMedia () -> [String: Any]{
@@ -522,8 +525,10 @@ class RTCPeer: NSObject {
     
     func setRemoteVideoContainer(view: UIView){
         remoteVideoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
-        view.addSubview(remoteVideoRenderer!)
         remoteVideoTrack?.add(remoteVideoRenderer!)
+        DispatchQueue.main.async {
+            view.addSubview(self.remoteVideoRenderer!)
+        }
     }
     
     fileprivate func start() {

@@ -12,7 +12,7 @@ import WebRTC
 class RTCClientConfig {
     
     // static let SECURE_CONNECTION = false
-    static let RTC_SERVER_URL = "wss://192.168.200.112:8081/ws/"
+    static let RTC_SERVER_URL = "wss://192.168.200.112:8443/ws/"
     static let STUN_SERVER_URL = "stun:stun.l.google.com:19302"
     static let TURN_SERVER_URL = "https://turn.votebin.com"
     static let validateSsl = false
@@ -164,7 +164,7 @@ protocol RTCClientDelegate {
     
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool)
 
-    func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool)
+    func rtcClientDidAddRemoteMediaStream(peer: RTCPeer, stream: RTCMediaStream, audioOnly: Bool)
     
     // Optional peer delegate methods
     func rtcRemotePeerDidChangeAudioState(peer: RTCPeer, on: Bool)

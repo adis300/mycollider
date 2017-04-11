@@ -19,11 +19,13 @@ class ViewController: UIViewController {
     var videoSwitch = true
     var audioSwitch = true
     
-    @IBOutlet weak var remoteVideoView: RTCEAGLVideoView!
+    @IBOutlet weak var remoteVideoContainer: UIView!
     @IBOutlet weak var localVideoContainer: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
         rtcClient.initialize(delegate: self)
     }
 
@@ -65,12 +67,8 @@ extension ViewController: RTCClientDelegate{
         
     }
     
-    func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool){
-        remoteVideoTrack = stream.videoTracks.first
-        stream.videoTracks.first?.add(remoteVideoView)
-        RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
-
+    func rtcClientDidAddRemoteMediaStream(peer: RTCPeer, stream: RTCMediaStream, audioOnly: Bool){
+        peer.setRemoteVideoContainer(view: remoteVideoContainer)
     }
-
 }
 

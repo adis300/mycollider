@@ -13,8 +13,8 @@ class ViewController: UIViewController {
 
     let rtcClient = RTCClient()
     
-    var localVideoTrack: RTCVideoTrack?
-    var remoteVideoTrack: RTCVideoTrack?
+    var localVideoTrack: RTCVideoTrack? //Not yet used
+    var remoteVideoTrack: RTCVideoTrack? //Not yet used
     var useSpeaker = false
     
     @IBOutlet weak var remoteVideoView: RTCEAGLVideoView!
@@ -57,21 +57,7 @@ extension ViewController: RTCClientDelegate{
         if authorized{
             if !audioOnly{
                 
-                /*
-                let videoSource = factory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
-                let previewLayer = AVCaptureVideoPreviewLayer(session: videoSource.captureSession)
-                previewLayer?.frame = localVideoView.bounds
-                                
-                localVideoView.layer.addSublayer(previewLayer!)
-                
-                localVideoTrack = client.localVideoTrack
-                localVideoTrack?.add(localVideoView)
-                */
-                
-                localVideoTrack = client.localVideoTrack!
-                // localVideoTrack?.remove(localVideoView)
-                
-                localVideoTrack?.add(localVideoView)
+                client.localVideoTrack?.add(localVideoView)
  
                 client.connect(roomId: "abc")
 
@@ -86,8 +72,8 @@ extension ViewController: RTCClientDelegate{
     
     func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool){
         // remoteVideoView.renderFrame(nil)
-        remoteVideoTrack = stream.videoTracks.first!
-        remoteVideoTrack!.add(remoteVideoView)
+        remoteVideoTrack = stream.videoTracks.first
+        stream.videoTracks.first?.add(remoteVideoView)
         RTCClientConfig.setAudioOutput(enableSpeaker: useSpeaker)
 
     }

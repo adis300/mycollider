@@ -32,6 +32,8 @@ class RTCClient: NSObject {
     
     var peers:[String: RTCPeer] = [:]
     
+    var peerVideoTracks:[String: RTCVideoTrack] = [:]
+    
     var delegate: RTCClientDelegate?
     
     
@@ -285,6 +287,7 @@ extension RTCClient {
             }
             peer.peerConnection.close()
             peers.removeValue(forKey: peerId)
+            peerVideoTracks.removeValue(forKey: peerId)
         }
     }
     
@@ -344,6 +347,8 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     
     /** Called when media is received on a new stream from remote peer. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
+        
+        parent.peerVideoTracks[peerId] = stream.videoTracks.first!
         parent.delegate?.rtcClientDidAddRemoteMediaStream(client: parent, peerConnection:peerConnection, stream: stream, audioOnly: RTCClientConfig.audioOnly)
         print("DEBUG, peer connection did add stream")
     }

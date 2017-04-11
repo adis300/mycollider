@@ -16,6 +16,8 @@ class ViewController: UIViewController {
     var localVideoTrack: RTCVideoTrack? //Not yet used
     var remoteVideoTrack: RTCVideoTrack? //Not yet used
     var useSpeaker = false
+    var videoSwitch = true
+    var audioSwitch = true
     
     @IBOutlet weak var remoteVideoView: RTCEAGLVideoView!
     @IBOutlet weak var localVideoView: RTCEAGLVideoView!
@@ -25,6 +27,16 @@ class ViewController: UIViewController {
         rtcClient.initialize(delegate: self)
     }
 
+    @IBAction func videoSwitchClick(_ sender: Any) {
+        videoSwitch = !videoSwitch
+        rtcClient.setVideo(on: videoSwitch)
+    }
+    
+    @IBAction func audioSwitchClick(_ sender: Any) {
+        audioSwitch = !audioSwitch
+        rtcClient.setAudio(on: audioSwitch)
+    }
+    
     func joinRoom(){
         
         rtcClient.connect(roomId: "abc")
@@ -74,8 +86,6 @@ extension ViewController: RTCClientDelegate{
         RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
 
     }
-    
-    
 
 }
 

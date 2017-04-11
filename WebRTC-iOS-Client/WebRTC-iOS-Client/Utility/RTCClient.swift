@@ -12,9 +12,9 @@ import WebRTC
 
 class RTCClient: NSObject {
     
-    fileprivate(set) var audioOn = true
+    fileprivate(set) var audioEnabled = true
     
-    fileprivate(set) var videoOn = true
+    fileprivate(set) var videoEnabled = true
     
     var localVideoTrack: RTCVideoTrack?
     
@@ -106,6 +106,14 @@ class RTCClient: NSObject {
         socket?.delegate = self
         self.socket?.connect()
         
+    }
+    
+    func setAudio(on: Bool){
+        localAudioTrack?.isEnabled = on
+    }
+    
+    func setVideo(on: Bool){
+        localVideoTrack?.isEnabled = on
     }
     
     fileprivate func handleServerMessage(msg: JSON){
@@ -305,8 +313,8 @@ extension RTCClient {
         self.localMediaStream = nil
         self.socket = nil
         self.roomId = nil
-        self.audioOn = true
-        self.videoOn = true
+        self.audioEnabled = true
+        self.videoEnabled = true
     }
     
 }

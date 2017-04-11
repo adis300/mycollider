@@ -36,8 +36,8 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfU-Ex-aPK">
-                                <rect key="frame" x="159" y="318" width="56" height="30"/>
-                                <state key="normal" title="Speaker"/>
+                                <rect key="frame" x="144" y="318" width="86" height="30"/>
+                                <state key="normal" title="Use speaker"/>
                                 <connections>
                                     <action selector="toggleSpeaker:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Th6-AO-dlV"/>
                                 </connections>
@@ -46,19 +46,34 @@
                                 <rect key="frame" x="16" y="356" width="343" height="291"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EPB-Eu-xgQ">
+                                <rect key="frame" x="16" y="57" width="40" height="30"/>
+                                <state key="normal" title="Audio"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2n2-tH-KTs">
+                                <rect key="frame" x="321" y="57" width="38" height="30"/>
+                                <state key="normal" title="video"/>
+                                <connections>
+                                    <action selector="videoSwitchClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XTq-tI-zIo"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="7lQ-oh-V5D" secondAttribute="bottom" constant="20" id="4KZ-Jg-bZK"/>
                             <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="CcO-fB-aJk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="7lQ-oh-V5D" secondAttribute="trailing" id="F6V-8m-FhF"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="EPB-Eu-xgQ" secondAttribute="leading" id="USB-3i-ehb"/>
                             <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V4h-PK-bOH"/>
+                            <constraint firstItem="EPB-Eu-xgQ" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="VAN-ws-2Vn"/>
                             <constraint firstItem="iGV-9C-nlT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="Yrb-P2-aD2"/>
                             <constraint firstItem="7lQ-oh-V5D" firstAttribute="top" secondItem="kfU-Ex-aPK" secondAttribute="bottom" constant="8" id="ajR-O7-C2g"/>
                             <constraint firstAttribute="leadingMargin" secondItem="7lQ-oh-V5D" secondAttribute="leading" id="iI3-99-0y4"/>
                             <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="jjm-tg-nTM"/>
                             <constraint firstItem="Lrg-3V-NA7" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nx0-BJ-oqN"/>
                             <constraint firstItem="kfU-Ex-aPK" firstAttribute="top" secondItem="Lrg-3V-NA7" secondAttribute="bottom" constant="8" id="p3t-U1-Nuw"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2n2-tH-KTs" secondAttribute="trailing" id="puU-sF-vEV"/>
+                            <constraint firstItem="2n2-tH-KTs" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="zbF-x1-0eh"/>
                             <constraint firstItem="iGV-9C-nlT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zxc-YE-z9I"/>
                         </constraints>
                     </view>

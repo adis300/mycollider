@@ -21,18 +21,22 @@ class RTCClient: NSObject {
 
     var localMediaStream: RTCMediaStream?
     
-    var socket: WebSocket?
+    fileprivate var socket: WebSocket?
     
     var iceServers : [RTCIceServer] = [] //[String] = []
     
     var roomId: String?
     var sessionId: String?
     
-    var sessionReady = false
+    fileprivate var sessionReady = false
+    func isSessionReady ()->Bool{
+        return sessionReady
+    }
     
-    var peers:[String: RTCPeer] = [:]
-    
-    var peerVideoTracks:[String: RTCVideoTrack] = [:]
+    fileprivate var peers:[String: RTCPeer] = [:]
+    func getPeers() -> [String: RTCPeer]{
+        return peers
+    }
     
     var delegate: RTCClientDelegate?
     
@@ -287,7 +291,6 @@ extension RTCClient {
             }
             peer.peerConnection.close()
             peers.removeValue(forKey: peerId)
-            peerVideoTracks.removeValue(forKey: peerId)
         }
     }
     
@@ -348,7 +351,7 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     /** Called when media is received on a new stream from remote peer. */
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
         
-        parent.peerVideoTracks[peerId] = stream.videoTracks.first!
+        remoteVideoTrack = stream.videoTracks.first
         parent.delegate?.rtcClientDidAddRemoteMediaStream(client: parent, peerConnection:peerConnection, stream: stream, audioOnly: RTCClientConfig.audioOnly)
         print("DEBUG, peer connection did add stream")
     }
@@ -435,6 +438,7 @@ class RTCPeer: NSObject {
     //var receiveMedia
     var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
     let parent: RTCClient
+    var remoteVideoTrack: RTCVideoTrack?
     
     private func getReceiveMedia () -> [String: Any]{
         

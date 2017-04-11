@@ -161,6 +161,21 @@ protocol RTCClientDelegate {
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool)
 
     func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool)
+    
+    // Some peer delegate methods
+    func rtcRemotePeerDidChangeAudioState(peer: RTCPeer, on: Bool)
+    
+    func rtcRemotePeerDidChangeVideoState(peer: RTCPeer, on: Bool)
 
+}
+
+extension RTCClientDelegate{
+    func rtcRemotePeerDidChangeAudioState(peer: RTCPeer, on: Bool){
+        print("RTCClientDelegate:rtcRemotePeerDidChangeAudioState:empty")
+    }
+    
+    func rtcRemotePeerDidChangeVideoState(peer: RTCPeer, on: Bool){
+        print("RTCClientDelegate:rtcRemotePeerDidChangeVideoState:empty")
+    }
 }
 

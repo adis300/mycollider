@@ -12,8 +12,9 @@ import WebRTC
 
 class RTCClient: NSObject {
     
-    var audioMute = false
-    var videoMute = false
+    fileprivate(set) var audioOn = true
+    
+    fileprivate(set) var videoOn = true
     
     var localVideoTrack: RTCVideoTrack?
     
@@ -23,23 +24,16 @@ class RTCClient: NSObject {
     
     fileprivate var socket: WebSocket?
     
-    var iceServers : [RTCIceServer] = [] //[String] = []
+    fileprivate(set) var iceServers : [RTCIceServer] = [] //[String] = []
     
-    var roomId: String?
-    var sessionId: String?
+    fileprivate(set) var roomId: String?
+    fileprivate(set) var sessionId: String?
     
-    fileprivate var sessionReady = false
-    func isSessionReady ()->Bool{
-        return sessionReady
-    }
+    fileprivate(set) var sessionReady = false
     
-    fileprivate var peers:[String: RTCPeer] = [:]
-    func getPeers() -> [String: RTCPeer]{
-        return peers
-    }
+    fileprivate(set) var peers:[String: RTCPeer] = [:]
     
     var delegate: RTCClientDelegate?
-    
     
     fileprivate func filterPeers(peerId: String?, type: String?) -> [RTCPeer]{
         return peers.filter{(peerId, peer) in
@@ -310,8 +304,8 @@ extension RTCClient {
         self.localMediaStream = nil
         self.socket = nil
         self.roomId = nil
-        self.audioMute = false
-        self.videoMute = false
+        self.audioOn = true
+        self.videoOn = true
     }
     
 }
@@ -619,6 +613,22 @@ class RTCPeer: NSObject {
                 if (mLine.iceTransport) mLine.iceTransport.addRemoteCandidate({});
             });
             */
+        case "mute":
+            if payload["name"].string == "audio"{
+                parent.delegate?.rtcRemotePeerDidChangeAudioState(peer: self, on: false)
+            }else if payload["name"].string == "video"{
+                parent.delegate?.rtcRemotePeerDidChangeVideoState(peer: self, on: false)
+            }else{
+                assertionFailure("ERROR:Unknown media type to mute")
+            }
+        case "unmute":
+            if payload["name"].string == "audio"{
+                parent.delegate?.rtcRemotePeerDidChangeAudioState(peer: self, on: true)
+            }else if payload["name"].string == "video"{
+                parent.delegate?.rtcRemotePeerDidChangeVideoState(peer: self, on: true)
+            }else{
+                assertionFailure("ERROR:Unknown media type to unmute")
+            }
         default:
             assertionFailure("RTCPeer:handleMessage: unknown message type")
         }

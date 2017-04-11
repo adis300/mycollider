@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     let rtcClient = RTCClient()
     
     var localVideoTrack: RTCVideoTrack?
-    var remoteVideoTracks: [RTCVideoTrack] = [];
+    var remoteVideoTrack: RTCVideoTrack?
     var useSpeaker = false
     
     @IBOutlet weak var remoteVideoView: RTCEAGLVideoView!
@@ -75,7 +75,7 @@ extension ViewController: RTCClientDelegate{
                 localVideoTrack?.add(localVideoView)
                 */
                 
-                localVideoTrack = client.localVideoTrack
+                localVideoTrack = client.localVideoTrack!
                 // localVideoTrack?.remove(localVideoView)
                 
                 localVideoTrack?.add(localVideoView)
@@ -92,8 +92,11 @@ extension ViewController: RTCClientDelegate{
     }
     
     func rtcClientDidAddRemoteMediaStream(client: RTCClient, peerConnection:RTCPeerConnection, stream: RTCMediaStream, audioOnly: Bool){
-        stream.videoTracks.first!.add(remoteVideoView)
+        // remoteVideoView.renderFrame(nil)
+        remoteVideoTrack = stream.videoTracks.first!
+        remoteVideoTrack!.add(remoteVideoView)
         RTCClientConfig.setAudioOutput(enableSpeaker: useSpeaker)
+
     }
     
     

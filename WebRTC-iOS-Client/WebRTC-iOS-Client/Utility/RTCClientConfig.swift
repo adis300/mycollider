@@ -96,6 +96,10 @@ class RTCFactory{
 
     static func getMediaConstraints(receiveMedia: [String: Any]?) -> RTCMediaConstraints{
         
+        if receiveMedia == nil{
+            return RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+        }
+        
         var mandatory:[String: Bool] = [:]
         if let mandatoryObj = receiveMedia?["mandatory"] as? [String: Bool]{
             mandatory = mandatoryObj

@@ -49,10 +49,11 @@ class RTCClient: NSObject {
         clearSession()
 
         self.delegate = delegate
-        self.localMediaStream = RTCFactory.peerConnectionFactory.mediaStream(withStreamId: RTCClientConfig.localMediaStreamId)
+        
+        self.localMediaStream = RTCFactory.getPeerConnectionFactory().mediaStream(withStreamId: RTCClientConfig.localMediaStreamId)
         
         // Initialize audio track
-        localAudioTrack = RTCFactory.peerConnectionFactory.audioTrack(withTrackId: RTCClientConfig.localAudioTrackId)
+        localAudioTrack = RTCFactory.getPeerConnectionFactory().audioTrack(withTrackId: RTCClientConfig.localAudioTrackId)
         localMediaStream?.addAudioTrack(localAudioTrack!)
         
         // let audioDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInMicrophone, mediaType: AVMediaTypeAudio, position: .unspecified)
@@ -69,8 +70,8 @@ class RTCClient: NSObject {
             }else{
                 
                 if let _ = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front){
-                    let videoSource = RTCFactory.peerConnectionFactory.avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
-                    localVideoTrack = RTCFactory.peerConnectionFactory.videoTrack(with: videoSource, trackId: RTCClientConfig.localVideoTrackId)
+                    let videoSource = RTCFactory.getPeerConnectionFactory().avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
+                    localVideoTrack = RTCFactory.getPeerConnectionFactory().videoTrack(with: videoSource, trackId: RTCClientConfig.localVideoTrackId)
                     
                     localMediaStream?.addVideoTrack(localVideoTrack!)
                     
@@ -488,7 +489,7 @@ class RTCPeer: NSObject {
     
     fileprivate func start() {
         let mediaConstraints = RTCFactory.getMediaConstraints(receiveMedia: receiveMedia)
-        peerConnection = RTCFactory.peerConnectionFactory.peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: self)
+        peerConnection = RTCFactory.getPeerConnectionFactory().peerConnection(with: RTCClientConfig.getRTCConfiguration(iceServers: parent.iceServers), constraints: mediaConstraints, delegate: self)
         
         // handle screensharing/broadcast mode
         if type == "screen" {

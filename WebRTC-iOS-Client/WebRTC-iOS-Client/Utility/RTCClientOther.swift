@@ -95,7 +95,7 @@ class RTCFactory{
 
     static func getMediaConstraints(receiveMedia: [String: Any]?) -> RTCMediaConstraints{
         
-        if receiveMedia == nil{
+        if receiveMedia == nil{            
             return RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         }
         
@@ -106,17 +106,14 @@ class RTCFactory{
         
         var mediaConstraintsMandatory: [String:String] = [:]
         
-        var offerVideo, offerAudio: Bool
+        var offerVideo = RTCClientConfig.defaultOfferToReceiveVideo
+        var offerAudio = RTCClientConfig.defaultOfferToReceiveAudio
         if let val = mandatory["OfferToReceiveVideo"]{
             offerVideo = val
-        }else{
-            offerVideo = RTCClientConfig.defaultOfferToReceiveVideo
         }
         
         if let val = mandatory["OfferToReceiveAudio"]{
             offerAudio = val
-        }else{
-            offerAudio = RTCClientConfig.defaultOfferToReceiveAudio
         }
         
         if offerVideo {

@@ -130,8 +130,8 @@
 			children = (
 				E00A8D7E1E90AA5B0005C452 /* SwiftyJSON */,
 				E00A8D791E90A3770005C452 /* Starscream */,
-				E00A8D5E1E9019920005C452 /* RTCClient.swift */,
 				E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */,
+				E00A8D5E1E9019920005C452 /* RTCClient.swift */,
 				E00A8D811E90C0160005C452 /* RTCClientUtils.swift */,
 			);
 			path = Utility;

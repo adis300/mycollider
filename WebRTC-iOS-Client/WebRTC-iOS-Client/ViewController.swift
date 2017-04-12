@@ -9,9 +9,11 @@
 import UIKit
 import WebRTC
 
+let serverUrl = "wss://"
+
 class ViewController: UIViewController {
 
-    let rtcClient = RTCClient()
+    let rtcClient = RTCClient(url: "wss://192.168.200.112:8443/ws/")
     
     var localVideoTrack: RTCVideoTrack? //Not yet used
     var remoteVideoTrack: RTCVideoTrack? //Not yet used

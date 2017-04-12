@@ -11,41 +11,68 @@ import WebRTC
 
 class RTCClientConfig {
     
-    // static let SECURE_CONNECTION = false
-    static let RTC_SERVER_URL = "wss://192.168.200.112:8443/ws/"
-    static let STUN_SERVER_URL = "stun:stun.l.google.com:19302"
-    static let TURN_SERVER_URL = "https://turn.votebin.com"
-    static let validateSsl = false
+    static var DEFAULT_STUN_SERVER_URL = "stun:stun.l.google.com:19302"
+    static var DEFAULT_TURN_SERVER_URL = "https://turn.votebin.com"
     
-    static let audioOnly = false
+    static var DEFAULT_PEER_TYPE = "video"
+    static var DEFAULT_ENABLE_DATA_CHANNELS = true
+    static var DEFAULT_USE_SPEAKER = true
+
+
+    static var validateSsl = false
+    
+    static var audioOnly = false
     // Default Configs
-    static let defaultOfferToReceiveAudio = true
-    static let defaultOfferToReceiveVideo = !audioOnly
+    static var offerToReceiveAudio = true
+    static var offerToReceiveVideo = !audioOnly
     
-    static let defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":defaultOfferToReceiveAudio, "OfferToReceiveVideo" :defaultOfferToReceiveVideo]];
+    private(set) static var defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":offerToReceiveAudio, "OfferToReceiveVideo" :offerToReceiveVideo]];
     
-    static let enableDataChannels = true
     
-    static let peerVolumeWhenSpeaking = 0.25
-    
-    static let media = ["video":true, "audio" : true]
-    
-    static let useSpeaker = true
+    // static let peerVolumeWhenSpeaking = 0.25
     
     // If loopback
     // static let kDefaultMediaConstraints = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio":"true", "OfferToReceiveVideo" :"true"], optionalConstraints: ["DtlsSrtpKeyAgreement" : "true"])
-    
-    static let defaultOptions:[String: Any] = [:]
     
     static let dataChannelConfiguration = RTCDataChannelConfiguration()
     
     private static let rtcConfiguration = RTCConfiguration()
     
+    static func load(config: [String: Any]){
+        if let val  = config["defaultEnableDataChannels"] as? Bool{
+            DEFAULT_ENABLE_DATA_CHANNELS = val
+        }
+        if let val  = config["defaultUseSpeaker"] as? Bool{
+            DEFAULT_USE_SPEAKER = val
+        }
+        if let val  = config["defaultPeerType"] as? String{
+            DEFAULT_PEER_TYPE = val
+        }
+        if let val = config["validateSsl"] as? Bool{
+            validateSsl = val
+        }
+        if let val = config["offerToReceiveAudio"] as? Bool{
+            offerToReceiveAudio = val
+        }
+        if let val = config["offerToReceiveVideo"] as? Bool{
+            offerToReceiveVideo = val
+        }
+        if let val = config["audioOnly"] as? Bool{
+            audioOnly = val
+            if audioOnly && offerToReceiveVideo{
+                offerToReceiveVideo = false
+            }
+        }
+        
+        defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":offerToReceiveAudio, "OfferToReceiveVideo" :offerToReceiveVideo]]
+        
+    }
+    
     static func getRTCConfiguration(iceServers: [RTCIceServer]?) -> RTCConfiguration {
         if let servers = iceServers{
             RTCClientConfig.rtcConfiguration.iceServers = servers
         }else{
-            RTCClientConfig.rtcConfiguration.iceServers = [RTCIceServer(urlStrings: [RTCClientConfig.STUN_SERVER_URL])]
+            RTCClientConfig.rtcConfiguration.iceServers = [RTCIceServer(urlStrings: [RTCClientConfig.DEFAULT_STUN_SERVER_URL])]
         }
         return RTCClientConfig.rtcConfiguration
     }
@@ -62,7 +89,7 @@ class RTCClientConfig {
                     use = true
                 }
             }else{
-                if RTCClientConfig.useSpeaker {
+                if RTCClientConfig.DEFAULT_USE_SPEAKER {
                     use = true
                 }
             }
@@ -106,12 +133,11 @@ class RTCFactory{
         
         var mediaConstraintsMandatory: [String:String] = [:]
         
-        var offerVideo = RTCClientConfig.defaultOfferToReceiveVideo
-        var offerAudio = RTCClientConfig.defaultOfferToReceiveAudio
+        var offerVideo = RTCClientConfig.offerToReceiveVideo
+        var offerAudio = RTCClientConfig.offerToReceiveAudio
         if let val = mandatory["OfferToReceiveVideo"]{
             offerVideo = val
         }
-        
         if let val = mandatory["OfferToReceiveAudio"]{
             offerAudio = val
         }

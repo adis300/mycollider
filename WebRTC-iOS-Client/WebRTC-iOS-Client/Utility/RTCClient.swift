@@ -12,6 +12,8 @@ import WebRTC
 
 class RTCClient: NSObject {
     
+    fileprivate var serverUrl :String = ""
+    
     fileprivate(set) var audioEnabled = true
     
     fileprivate(set) var videoEnabled = true
@@ -34,12 +36,17 @@ class RTCClient: NSObject {
     fileprivate(set) var peers:[String: RTCPeer] = [:]
     
     var delegate: RTCClientDelegate?
+    
     fileprivate var localVideoRenderer: RTCEAGLVideoView?
     
     fileprivate func filterPeers(peerId: String?, type: String?) -> [RTCPeer]{
         return peers.filter{(peerId, peer) in
             return (peer.peerId == peerId) && (type == nil || peer.type == type)
             }.map{(key, val) in val}
+    }
+    
+    init(url:String) {
+        serverUrl = url
     }
     
     // Utility properties
@@ -102,7 +109,7 @@ class RTCClient: NSObject {
         }
                 
         self.roomId = roomId
-        socket = WebSocket(url: URL(string: RTCClientConfig.RTC_SERVER_URL + roomId)!)
+        socket = WebSocket(url: URL(string: serverUrl + roomId)!)
         if !RTCClientConfig.validateSsl{
             socket?.disableSSLCertValidation = true
         }
@@ -200,11 +207,11 @@ class RTCClient: NSObject {
                 if typeEnabled.boolValue {
                     let receiveMedia = [
                         "mandatory": [
-                            "OfferToReceiveAudio": type != "screen" && RTCClientConfig.defaultOfferToReceiveAudio,
-                            "OfferToReceiveVideo": RTCClientConfig.defaultOfferToReceiveVideo && type != "audio"
+                            "OfferToReceiveAudio": type != "screen" && RTCClientConfig.offerToReceiveAudio,
+                            "OfferToReceiveVideo": RTCClientConfig.offerToReceiveVideo && type != "audio"
                         ]
                     ]
-                    let peer = RTCPeer(options: ["id": id, "type": type, "enableDataChannels": RTCClientConfig.enableDataChannels && type != "screen", "receiveMedia": receiveMedia], parent:self)
+                    let peer = RTCPeer(id: id, options: ["type": type, "enableDataChannels": RTCClientConfig.DEFAULT_ENABLE_DATA_CHANNELS && type != "screen", "receiveMedia": receiveMedia], parent:self)
 
                     peer.start()
                     peer.sendOffer()
@@ -236,7 +243,7 @@ class RTCClient: NSObject {
                     
                     var enableDataChannels = false, sharemyscreen = false, broadcaster: String? = nil
                     
-                    if !isScreen && RTCClientConfig.enableDataChannels{
+                    if !isScreen && RTCClientConfig.DEFAULT_ENABLE_DATA_CHANNELS{
                         enableDataChannels = true
                     }
                     if isScreen {
@@ -246,10 +253,9 @@ class RTCClient: NSObject {
                         }
                     }
                     
-                    peer = RTCPeer(options: [
-                        "id": data["from"].string,
-                        "sid": data["sid"].string!,
-                        "type": data["roomType"].string!,
+                    peer = RTCPeer(id: data["from"].string!, options: [
+                        "sid": data["sid"].string,
+                        "type": data["roomType"].string,
                         "enableDataChannels": enableDataChannels,
                         "sharemyscreen": sharemyscreen,
                         "broadcaster": broadcaster
@@ -334,8 +340,8 @@ extension RTCClient {
         self.localMediaStream = nil
         self.socket = nil
         self.roomId = nil
-        self.audioEnabled = RTCClientConfig.defaultOfferToReceiveAudio
-        self.videoEnabled = RTCClientConfig.defaultOfferToReceiveVideo
+        self.audioEnabled = RTCClientConfig.offerToReceiveAudio
+        self.videoEnabled = RTCClientConfig.offerToReceiveVideo
     }
     
 }
@@ -457,11 +463,11 @@ class RTCPeer: NSObject {
     
     var peerConnection: RTCPeerConnection!
     var peerId: String!
-    var type = "video"   //default peer type to video
+    var type = RTCClientConfig.DEFAULT_PEER_TYPE   //default peer type to video
     var oneway = false
     var sharemyscreen = false
     var browserPrefix = "webkit"
-    var enableDataChannels = RTCClientConfig.enableDataChannels
+    var enableDataChannels = RTCClientConfig.DEFAULT_ENABLE_DATA_CHANNELS
     var sid: String = String(Date().timeIntervalSince1970)
     var broadcaster: String?
     //var stream
@@ -481,10 +487,10 @@ class RTCPeer: NSObject {
         if type == "screen"{
             mandatory["OfferToReceiveAudio"] = false
         }else{
-            mandatory["OfferToReceiveAudio"] = RTCClientConfig.defaultOfferToReceiveAudio
+            mandatory["OfferToReceiveAudio"] = RTCClientConfig.offerToReceiveAudio
         }
         
-        mandatory["OfferToReceiveVideo"] = RTCClientConfig.defaultOfferToReceiveVideo
+        mandatory["OfferToReceiveVideo"] = RTCClientConfig.offerToReceiveVideo
         
         receiveMedia["mandatory"] = mandatory
         
@@ -492,37 +498,31 @@ class RTCPeer: NSObject {
     }
     
 
-    init(options: [String: Any?], parent: RTCClient) {
+    init(id: String, options: [String: Any?], parent: RTCClient) {
         
         self.parent = parent
+        peerId = id
         
-        var opt: [String: Any] = RTCClientConfig.defaultOptions
-        
-        for (key, value) in options {
-            opt[key] = value
-        }
-        peerId = opt["id"] as! String
-        
-        if let val  = opt["type"] as? String{
+        if let val  = options["type"] as? String{
             type = val
         }
-        if let val  = opt["sid"] as? String{
+        if let val  = options["sid"] as? String{
             sid = val
         }
-        if let val  = opt["browserPrefix"] as? String{
+        if let val  = options["browserPrefix"] as? String{
             browserPrefix = val
         }
-        if let val  = opt["enableDataChannels"] as? Bool{
+        if let val  = options["enableDataChannels"] as? Bool{
             enableDataChannels = val
         }
-        if let val  = opt["sharemyscreen"] as? Bool{
+        if let val  = options["sharemyscreen"] as? Bool{
             sharemyscreen = val
         }
-        if let val  = opt["oneway"] as? Bool{
+        if let val  = options["oneway"] as? Bool{
             oneway = val
         }
         
-        if let val = opt["receiveMedia"] as? [String: Any]{
+        if let val = options["receiveMedia"] as? [String: Any]{
             receiveMedia = val
         }else{
             receiveMedia = RTCClientConfig.defaultReceiveMedia

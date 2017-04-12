@@ -9,11 +9,10 @@
 import UIKit
 import WebRTC
 
-let serverUrl = "wss://"
+let serverUrl = "wss://192.168.200.112:8443/ws/"
+let roomId = "abc"
 
 class ViewController: UIViewController {
-
-    let rtcClient = RTCClient(url: "wss://192.168.200.112:8443/ws/")
     
     var localVideoTrack: RTCVideoTrack? //Not yet used
     var remoteVideoTrack: RTCVideoTrack? //Not yet used
@@ -28,21 +27,17 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
-        rtcClient.initialize(delegate: self)
+        RTCClient.shared.initialize(delegate: self)
     }
 
     @IBAction func videoSwitchClick(_ sender: Any) {
         videoSwitch = !videoSwitch
-        rtcClient.setVideo(on: videoSwitch)
+        RTCClient.shared.setVideo(on: videoSwitch)
     }
     
     @IBAction func audioSwitchClick(_ sender: Any) {
         audioSwitch = !audioSwitch
-        rtcClient.setAudio(on: audioSwitch)
-    }
-    
-    func joinRoom(){
-        rtcClient.connect(roomId: "abc")
+        RTCClient.shared.setAudio(on: audioSwitch)
     }
 
     @IBAction func toggleSpeaker(_ sender: Any) {
@@ -58,7 +53,7 @@ extension ViewController: RTCClientDelegate{
             if !audioOnly{
                 client.setLocalVideoContainer(view: localVideoContainer)
             }
-            client.connect(roomId: "abc")
+            client.connect(serverUrl: serverUrl, roomId: roomId)
         }else{
             assertionFailure("Unauthorized to access media device")
         }

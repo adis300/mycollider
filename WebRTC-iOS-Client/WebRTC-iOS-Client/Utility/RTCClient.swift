@@ -12,7 +12,7 @@ import WebRTC
 
 class RTCClient: NSObject {
     
-    fileprivate var serverUrl :String = ""
+    static let shared = RTCClient()
     
     fileprivate(set) var audioEnabled = true
     
@@ -45,8 +45,7 @@ class RTCClient: NSObject {
             }.map{(key, val) in val}
     }
     
-    init(url:String) {
-        serverUrl = url
+    private override init() { //No op
     }
     
     // Utility properties
@@ -54,7 +53,7 @@ class RTCClient: NSObject {
     
     func initialize(delegate: RTCClientDelegate){
         
-        clearSession()
+        reset()
 
         self.delegate = delegate
         
@@ -94,11 +93,10 @@ class RTCClient: NSObject {
             }
         }
         
-        
-        
     }
     
-    func connect(roomId: String){
+    func connect(serverUrl: String, roomId: String){
+        
         guard delegate != nil else {
             assertionFailure("RTCClient:Not initialized, please call rtcClient.initialize(delegate)")
             return
@@ -196,7 +194,7 @@ class RTCClient: NSObject {
     }
     
     public func disconect(){
-        clearSession()
+        reset()
         socket?.disconnect()
     }
     
@@ -319,7 +317,7 @@ extension RTCClient {
         }
     }
     
-    fileprivate func clearSession(){
+    fileprivate func reset(){
         for (_, peer) in peers{
             if let stream = localMediaStream {
                 peer.peerConnection.remove(stream)
@@ -360,8 +358,7 @@ extension RTCClient: WebSocketDelegate{
             handleServerMessage(msg: json)
             
         }else{
-            print("ERROR: Should not happen")
-            print(text)
+            assertionFailure("ERROR: JSON decoding failure with utf8")
         }
     }
     
@@ -462,7 +459,7 @@ extension RTCPeer: RTCPeerConnectionDelegate{
 class RTCPeer: NSObject {
     
     var peerConnection: RTCPeerConnection!
-    var peerId: String!
+    var peerId: String
     var type = RTCClientConfig.DEFAULT_PEER_TYPE   //default peer type to video
     var oneway = false
     var sharemyscreen = false

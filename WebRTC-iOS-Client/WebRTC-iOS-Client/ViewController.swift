@@ -10,7 +10,7 @@ import UIKit
 import WebRTC
 
 let serverUrl = "wss://192.168.200.112:8443/ws/"
-let roomId = "abc"
+// let roomId = "abc"
 
 class ViewController: UIViewController {
     
@@ -23,11 +23,23 @@ class ViewController: UIViewController {
     @IBOutlet weak var remoteVideoContainer: UIView!
     @IBOutlet weak var localVideoContainer: UIView!
     
+    @IBOutlet weak var roomIdField: UITextField!
+    
+    @IBAction func connectClick(_ sender: Any) {
+        roomIdField.resignFirstResponder()
+        if let roomId = roomIdField.text {
+            if !roomId.isEmpty{
+                RTCClient.shared.connect(serverUrl: serverUrl, roomId: roomId, delegate: self)
+                return
+            }
+        }
+        let alert = UIAlertController(title: "Sorry", message: "Please enter a valid roomId", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
-        RTCClient.shared.initialize(delegate: self)
     }
 
     @IBAction func videoSwitchClick(_ sender: Any) {
@@ -50,14 +62,10 @@ extension ViewController: RTCClientDelegate{
     
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool){
         if authorized{
-            if !audioOnly{
-                client.setLocalVideoContainer(view: localVideoContainer)
-            }
-            client.connect(serverUrl: serverUrl, roomId: roomId)
+            client.setLocalVideoContainer(view: localVideoContainer)
         }else{
             assertionFailure("Unauthorized to access media device")
         }
-        
     }
     
     func rtcClientDidAddRemoteMediaStream(peer: RTCPeer, stream: RTCMediaStream, audioOnly: Bool){

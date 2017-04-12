@@ -51,7 +51,7 @@ class RTCClient: NSObject {
     // Utility properties
     // fileprivate var peerConnections:[RTCPeerConnection] = []
     
-    func initialize(delegate: RTCClientDelegate){
+    func connect(serverUrl:String, roomId: String, delegate: RTCClientDelegate){
         
         reset()
 
@@ -78,13 +78,10 @@ class RTCClient: NSObject {
                 if let _ = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .back){
                     let videoSource = RTCFactory.getPeerConnectionFactory().avFoundationVideoSource(with: RTCFactory.getMediaConstraints(receiveMedia: nil))
                     localVideoTrack = RTCFactory.getPeerConnectionFactory().videoTrack(with: videoSource, trackId: RTCClientConfig.localVideoTrackId)
-                    
-                    
-                    
                     localMediaStream?.addVideoTrack(localVideoTrack!)
                     
                     delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: true, audioOnly: RTCClientConfig.audioOnly)
-
+                    self.socketConnect(serverUrl: serverUrl, roomId: roomId)
                 }else{
                     print("RTCClient:Initialize:Camera unavailable on this device");
                     delegate.rtcClientDidSetLocalMediaStream(client: self, authorized: false, audioOnly: RTCClientConfig.audioOnly)
@@ -95,7 +92,7 @@ class RTCClient: NSObject {
         
     }
     
-    func connect(serverUrl: String, roomId: String){
+    private func socketConnect(serverUrl: String, roomId: String){
         
         guard delegate != nil else {
             assertionFailure("RTCClient:Not initialized, please call rtcClient.initialize(delegate)")
@@ -318,6 +315,9 @@ extension RTCClient {
     }
     
     fileprivate func reset(){
+        
+        RTCClientConfig.setAudioOutput(useSpeaker: nil)
+
         for (_, peer) in peers{
             if let stream = localMediaStream {
                 peer.peerConnection.remove(stream)

@@ -22,67 +22,79 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Local video" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iGV-9C-nlT">
-                                <rect key="frame" x="144" y="28" width="87" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lrg-3V-NA7">
-                                <rect key="frame" x="107.5" y="57" width="160" height="253"/>
+                                <rect key="frame" x="179" y="28" width="180" height="300"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="160" id="34s-Pc-jcp"/>
+                                    <constraint firstAttribute="height" constant="300" id="88A-Ej-Iat"/>
+                                    <constraint firstAttribute="width" constant="180" id="ME6-Ur-Dy3"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfU-Ex-aPK">
-                                <rect key="frame" x="144" y="318" width="86" height="30"/>
-                                <state key="normal" title="Use speaker"/>
-                                <connections>
-                                    <action selector="toggleSpeaker:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Th6-AO-dlV"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7lQ-oh-V5D">
-                                <rect key="frame" x="16" y="356" width="343" height="291"/>
+                                <rect key="frame" x="16" y="336" width="343" height="311"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EPB-Eu-xgQ">
-                                <rect key="frame" x="16" y="57" width="40" height="30"/>
+                                <rect key="frame" x="71" y="104" width="40" height="30"/>
                                 <state key="normal" title="Audio"/>
                                 <connections>
                                     <action selector="audioSwitchClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xUb-aZ-Veo"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2n2-tH-KTs">
-                                <rect key="frame" x="321" y="57" width="38" height="30"/>
+                                <rect key="frame" x="72" y="142" width="38" height="30"/>
                                 <state key="normal" title="video"/>
                                 <connections>
                                     <action selector="videoSwitchClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XTq-tI-zIo"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="roomId" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0rg-Lh-uQH">
+                                <rect key="frame" x="16" y="28" width="150" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="SgM-ch-RdK"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9q2-25-hrV">
+                                <rect key="frame" x="62" y="66" width="59" height="30"/>
+                                <state key="normal" title="Connect"/>
+                                <connections>
+                                    <action selector="connectClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g7s-gP-9jj"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfU-Ex-aPK">
+                                <rect key="frame" x="48" y="180" width="86" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Use speaker"/>
+                                <connections>
+                                    <action selector="toggleSpeaker:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Th6-AO-dlV"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="7lQ-oh-V5D" secondAttribute="bottom" constant="20" id="4KZ-Jg-bZK"/>
-                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="CcO-fB-aJk"/>
+                            <constraint firstItem="EPB-Eu-xgQ" firstAttribute="centerX" secondItem="0rg-Lh-uQH" secondAttribute="centerX" id="8PU-nr-kvK"/>
+                            <constraint firstItem="2n2-tH-KTs" firstAttribute="centerX" secondItem="0rg-Lh-uQH" secondAttribute="centerX" id="8XQ-SZ-2lB"/>
+                            <constraint firstItem="9q2-25-hrV" firstAttribute="centerX" secondItem="0rg-Lh-uQH" secondAttribute="centerX" id="BSH-7k-DKU"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="0rg-Lh-uQH" secondAttribute="leading" id="Bht-AL-9Js"/>
+                            <constraint firstItem="7lQ-oh-V5D" firstAttribute="top" secondItem="Lrg-3V-NA7" secondAttribute="bottom" constant="8" id="BpW-JI-eMs"/>
+                            <constraint firstItem="EPB-Eu-xgQ" firstAttribute="top" secondItem="9q2-25-hrV" secondAttribute="bottom" constant="8" id="EOQ-vG-kUw"/>
                             <constraint firstAttribute="trailingMargin" secondItem="7lQ-oh-V5D" secondAttribute="trailing" id="F6V-8m-FhF"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="EPB-Eu-xgQ" secondAttribute="leading" id="USB-3i-ehb"/>
-                            <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V4h-PK-bOH"/>
-                            <constraint firstItem="EPB-Eu-xgQ" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="VAN-ws-2Vn"/>
-                            <constraint firstItem="iGV-9C-nlT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="Yrb-P2-aD2"/>
-                            <constraint firstItem="7lQ-oh-V5D" firstAttribute="top" secondItem="kfU-Ex-aPK" secondAttribute="bottom" constant="8" id="ajR-O7-C2g"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Lrg-3V-NA7" secondAttribute="trailing" id="Fnb-Qv-Lv4"/>
+                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="Pqp-RI-dNe"/>
+                            <constraint firstItem="9q2-25-hrV" firstAttribute="top" secondItem="0rg-Lh-uQH" secondAttribute="bottom" constant="8" id="aCG-Pn-e5d"/>
+                            <constraint firstItem="0rg-Lh-uQH" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="bLw-1F-wfQ"/>
                             <constraint firstAttribute="leadingMargin" secondItem="7lQ-oh-V5D" secondAttribute="leading" id="iI3-99-0y4"/>
-                            <constraint firstItem="kfU-Ex-aPK" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="jjm-tg-nTM"/>
-                            <constraint firstItem="Lrg-3V-NA7" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nx0-BJ-oqN"/>
-                            <constraint firstItem="kfU-Ex-aPK" firstAttribute="top" secondItem="Lrg-3V-NA7" secondAttribute="bottom" constant="8" id="p3t-U1-Nuw"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="2n2-tH-KTs" secondAttribute="trailing" id="puU-sF-vEV"/>
-                            <constraint firstItem="2n2-tH-KTs" firstAttribute="top" secondItem="iGV-9C-nlT" secondAttribute="bottom" constant="8" id="zbF-x1-0eh"/>
-                            <constraint firstItem="iGV-9C-nlT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zxc-YE-z9I"/>
+                            <constraint firstItem="2n2-tH-KTs" firstAttribute="top" secondItem="EPB-Eu-xgQ" secondAttribute="bottom" constant="8" id="v1C-Je-gcJ"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="localVideoContainer" destination="Lrg-3V-NA7" id="YvQ-QN-rUI"/>
                         <outlet property="remoteVideoContainer" destination="7lQ-oh-V5D" id="We1-pE-oFL"/>
+                        <outlet property="roomIdField" destination="0rg-Lh-uQH" id="mid-p3-czf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

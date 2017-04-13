@@ -148,6 +148,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @class RTCVideoTrack;
 @class RTCAudioTrack;
 @class RTCMediaStream;
+@protocol RTCClientDelegate;
 @class UIView;
 
 SWIFT_CLASS("_TtC12RTCSignaling9RTCClient")
@@ -157,9 +158,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) RTCClient * 
 @property (nonatomic, strong) RTCVideoTrack * _Nullable localVideoTrack;
 @property (nonatomic, strong) RTCAudioTrack * _Nullable localAudioTrack;
 @property (nonatomic, strong) RTCMediaStream * _Nullable localMediaStream;
+@property (nonatomic, strong) id <RTCClientDelegate> _Nullable delegate;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
+- (void)connectWithServerUrl:(NSString * _Nonnull)serverUrl roomId:(NSString * _Nonnull)roomId delegate:(id <RTCClientDelegate> _Nonnull)delegate;
 - (void)setAudioOn:(BOOL)on;
 - (void)setVideoOn:(BOOL)on;
+- (void)setAudioOutputWithUseSpeaker:(BOOL)useSpeaker;
 - (void)setLocalVideoContainerWithView:(UIView * _Nonnull)view;
 - (void)disconect;
 @end
@@ -176,6 +180,43 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) RTCClient * 
 - (void)websocketDidDisconnectWithSocket:(WebSocket * _Nonnull)socket error:(NSError * _Nullable)error;
 - (void)websocketDidReceiveMessageWithSocket:(WebSocket * _Nonnull)socket text:(NSString * _Nonnull)text;
 - (void)websocketDidReceiveDataWithSocket:(WebSocket * _Nonnull)socket data:(NSData * _Nonnull)data;
+@end
+
+
+SWIFT_CLASS("_TtC12RTCSignaling15RTCClientConfig")
+@interface RTCClientConfig : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull DEFAULT_STUN_SERVER_URL;)
++ (NSString * _Nonnull)DEFAULT_STUN_SERVER_URL SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull DEFAULT_TURN_SERVER_URL;)
++ (NSString * _Nonnull)DEFAULT_TURN_SERVER_URL SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull DEFAULT_PEER_TYPE;)
++ (NSString * _Nonnull)DEFAULT_PEER_TYPE SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL DEFAULT_ENABLE_DATA_CHANNELS;)
++ (BOOL)DEFAULT_ENABLE_DATA_CHANNELS SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL DEFAULT_USE_SPEAKER;)
++ (BOOL)DEFAULT_USE_SPEAKER SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL validateSsl;)
++ (BOOL)validateSsl SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL audioOnly;)
++ (BOOL)audioOnly SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL offerToReceiveAudio;)
++ (BOOL)offerToReceiveAudio SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL offerToReceiveVideo;)
++ (BOOL)offerToReceiveVideo SWIFT_WARN_UNUSED_RESULT;
++ (void)loadWithConfig:(NSDictionary<NSString *, id> * _Nonnull)config;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class RTCPeer;
+
+SWIFT_PROTOCOL("_TtP12RTCSignaling17RTCClientDelegate_")
+@protocol RTCClientDelegate
+- (void)rtcClientDidSetLocalMediaStreamWithClient:(RTCClient * _Nonnull)client authorized:(BOOL)authorized audioOnly:(BOOL)audioOnly;
+- (void)rtcClientDidAddRemoteMediaStreamWithPeer:(RTCPeer * _Nonnull)peer stream:(RTCMediaStream * _Nonnull)stream audioOnly:(BOOL)audioOnly;
+@optional
+- (void)rtcRemotePeerDidChangeAudioStateWithPeer:(RTCPeer * _Nonnull)peer on:(BOOL)on;
+- (void)rtcRemotePeerDidChangeVideoStateWithPeer:(RTCPeer * _Nonnull)peer on:(BOOL)on;
+- (void)rtcRemotePeerFailedToGenerateIceCandidateWithPeer:(RTCPeer * _Nonnull)peer;
 @end
 
 @class RTCPeerConnection;

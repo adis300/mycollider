@@ -7,10 +7,9 @@
 //
 
 import UIKit
-import WebRTC
 import RTCSignaling
 
-let serverUrl = "wss://192.168.200.112:8443/ws/"
+let serverUrl = "wss://iconthin.com:8443/ws/"
 // let roomId = "abc"
 
 class ViewController: UIViewController {
@@ -56,7 +55,7 @@ class ViewController: UIViewController {
 
     @IBAction func toggleSpeaker(_ sender: Any) {
         useSpeaker = !useSpeaker
-        RTCClientConfig.setAudioOutput(useSpeaker: useSpeaker)
+        RTCClient.shared.setAudioOutput(useSpeaker: useSpeaker)
     }
 
 }

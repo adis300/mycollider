@@ -4,8 +4,6 @@
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Video chat</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Video chat</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>

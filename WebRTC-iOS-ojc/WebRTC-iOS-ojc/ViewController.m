@@ -26,6 +26,9 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    
+    [RTCClientConfig loadWithConfig:@{@"audioOnly": @YES}];
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     _audioOn = YES;

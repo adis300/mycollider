@@ -8,6 +8,7 @@
 
 import UIKit
 import WebRTC
+import RTCSignaling
 
 let serverUrl = "wss://192.168.200.112:8443/ws/"
 // let roomId = "abc"
@@ -27,7 +28,8 @@ class ViewController: UIViewController {
     
     @IBAction func connectClick(_ sender: Any) {
         roomIdField.resignFirstResponder()
-        if let roomId = roomIdField.text {
+        if let text = roomIdField.text {
+            let roomId = text.replacingOccurrences(of: " ", with: "")
             if !roomId.isEmpty{
                 RTCClient.shared.connect(serverUrl: serverUrl, roomId: roomId, delegate: self)
                 return

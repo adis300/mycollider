@@ -9,26 +9,28 @@
 import Foundation
 import WebRTC
 
-class RTCClientConfig {
+public class RTCClientConfig {
     
-    static var DEFAULT_STUN_SERVER_URL = "stun:stun.l.google.com:19302"
-    static var DEFAULT_TURN_SERVER_URL = "https://turn.votebin.com"
+    private(set) public static var DEFAULT_STUN_SERVER_URL = "stun:stun.l.google.com:19302"
+    private(set) public static var DEFAULT_TURN_SERVER_URL = "https://turn.votebin.com"
     
-    static var DEFAULT_PEER_TYPE = "video"
-    static var DEFAULT_ENABLE_DATA_CHANNELS = true
-    static var DEFAULT_USE_SPEAKER = true
+    private(set) public static var DEFAULT_PEER_TYPE = "video"
+    private(set) public static var DEFAULT_ENABLE_DATA_CHANNELS = true
+    private(set) public static var DEFAULT_USE_SPEAKER = true
 
 
-    static var validateSsl = false
+    private(set) public static var validateSsl = false
     
-    static var audioOnly = false
+    private(set) public static var audioOnly = false
     // Default Configs
-    static var offerToReceiveAudio = true
-    static var offerToReceiveVideo = !audioOnly
+    private(set) public static var offerToReceiveAudio = true
+    private(set) public static var offerToReceiveVideo = !audioOnly
     
     private(set) static var defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":offerToReceiveAudio, "OfferToReceiveVideo" :offerToReceiveVideo]];
     
-    
+    private(set) static var localMediaStreamId = "local_stream"
+    private(set) static var localAudioTrackId = "local_audio"
+    private(set) static var localVideoTrackId = "local_video"
     // static let peerVolumeWhenSpeaking = 0.25
     
     // If loopback
@@ -38,7 +40,7 @@ class RTCClientConfig {
     
     private static let rtcConfiguration = RTCConfiguration()
     
-    static func load(config: [String: Any]){
+    public static func load(config: [String: Any]){
         if let val  = config["defaultEnableDataChannels"] as? Bool{
             DEFAULT_ENABLE_DATA_CHANNELS = val
         }
@@ -63,6 +65,16 @@ class RTCClientConfig {
                 offerToReceiveVideo = false
             }
         }
+        // IDs
+        if let val = config["localMediaStreamId"] as? String{
+            localMediaStreamId = val
+        }
+        if let val = config["localAudioTrackId"] as? String{
+            localAudioTrackId = val
+        }
+        if let val = config["localVideoTrackId"] as? String{
+            localVideoTrackId = val
+        }
         
         defaultReceiveMedia = ["mandatory": ["OfferToReceiveAudio":offerToReceiveAudio, "OfferToReceiveVideo" :offerToReceiveVideo]]
         
@@ -77,11 +89,7 @@ class RTCClientConfig {
         return RTCClientConfig.rtcConfiguration
     }
     
-    static let localMediaStreamId = "local_stream"
-    static let localAudioTrackId = "local_audio"
-    static let localVideoTrackId = "local_video"
-    
-    static func setAudioOutput(useSpeaker: Bool?){
+    public static func setAudioOutput(useSpeaker: Bool?){
         do{
             var use: Bool = false
             if let useSpeaker = useSpeaker{
@@ -183,7 +191,7 @@ class RTCFactory{
     }
 }
 
-protocol RTCClientDelegate {
+public protocol RTCClientDelegate {
     
     func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool)
 
@@ -199,15 +207,15 @@ protocol RTCClientDelegate {
 
 // Default optional delegate methods
 extension RTCClientDelegate{
-    func rtcRemotePeerDidChangeAudioState(peer: RTCPeer, on: Bool){
+    public func rtcRemotePeerDidChangeAudioState(peer: RTCPeer, on: Bool){
         print("RTCClientDelegate:rtcRemotePeerDidChangeAudioState:empty")
     }
     
-    func rtcRemotePeerDidChangeVideoState(peer: RTCPeer, on: Bool){
+    public func rtcRemotePeerDidChangeVideoState(peer: RTCPeer, on: Bool){
         print("RTCClientDelegate:rtcRemotePeerDidChangeVideoState:empty")
     }
     
-    func rtcRemotePeerFailedToGenerateIceCandidate(peer: RTCPeer){
+    public func rtcRemotePeerFailedToGenerateIceCandidate(peer: RTCPeer){
         print("RTCClientDelegate:rtcFailedToGenerateIce:empty")
     }
 }

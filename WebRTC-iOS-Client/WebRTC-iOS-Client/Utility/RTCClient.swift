@@ -10,19 +10,19 @@ import UIKit
 import WebRTC
 
 
-class RTCClient: NSObject {
+public class RTCClient: NSObject {
     
-    static let shared = RTCClient()
+    public static let shared = RTCClient()
     
     fileprivate(set) var audioEnabled = true
     
     fileprivate(set) var videoEnabled = true
     
-    var localVideoTrack: RTCVideoTrack?
+    public var localVideoTrack: RTCVideoTrack?
     
-    var localAudioTrack: RTCAudioTrack?
+    public var localAudioTrack: RTCAudioTrack?
 
-    var localMediaStream: RTCMediaStream?
+    public var localMediaStream: RTCMediaStream?
     
     fileprivate var socket: WebSocket?
     
@@ -35,7 +35,7 @@ class RTCClient: NSObject {
     
     fileprivate(set) var peers:[String: RTCPeer] = [:]
     
-    var delegate: RTCClientDelegate?
+    public var delegate: RTCClientDelegate?
     
     fileprivate var localVideoRenderer: RTCEAGLVideoView?
     
@@ -51,7 +51,7 @@ class RTCClient: NSObject {
     // Utility properties
     // fileprivate var peerConnections:[RTCPeerConnection] = []
     
-    func connect(serverUrl:String, roomId: String, delegate: RTCClientDelegate){
+    public func connect(serverUrl:String, roomId: String, delegate: RTCClientDelegate){
         
         reset()
 
@@ -113,15 +113,15 @@ class RTCClient: NSObject {
         
     }
     
-    func setAudio(on: Bool){
+    public func setAudio(on: Bool){
         localAudioTrack?.isEnabled = on
     }
     
-    func setVideo(on: Bool){
+    public func setVideo(on: Bool){
         localVideoTrack?.isEnabled = on && !RTCClientConfig.audioOnly
     }
     
-    func setLocalVideoContainer(view: UIView){
+    public func setLocalVideoContainer(view: UIView){
         if !RTCClientConfig.audioOnly{
             let videoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
             view.addSubview(videoRenderer)
@@ -346,13 +346,13 @@ extension RTCClient {
 
 
 extension RTCClient: WebSocketDelegate{
-    func websocketDidConnect(socket: WebSocket){
+    public func websocketDidConnect(socket: WebSocket){
         print("Did connect")
     }
-    func websocketDidDisconnect(socket: WebSocket, error: NSError?){
+    public func websocketDidDisconnect(socket: WebSocket, error: NSError?){
         print("Did disconnect")
     }
-    func websocketDidReceiveMessage(socket: WebSocket, text: String){
+    public func websocketDidReceiveMessage(socket: WebSocket, text: String){
         if let data = text.data(using: .utf8){
             let json = JSON(data: data)
             handleServerMessage(msg: json)
@@ -362,7 +362,7 @@ extension RTCClient: WebSocketDelegate{
         }
     }
     
-    func websocketDidReceiveData(socket: WebSocket, data: Data){
+    public func websocketDidReceiveData(socket: WebSocket, data: Data){
         print("Received some data \(data.count)")
     }
     
@@ -371,12 +371,12 @@ extension RTCClient: WebSocketDelegate{
 extension RTCPeer: RTCPeerConnectionDelegate{
     
     /** Called when the SignalingState changed. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState){
         print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection state changed to \(stateChanged.rawValue)")
     }
     
     /** Called when media is received on a new stream from remote peer. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream){
         
         print("RTCPeer:RTCPeerConnectionDelegate: peer connection did add stream")
         if !RTCClientConfig.audioOnly{
@@ -388,17 +388,17 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     }
     
     /** Called when a remote peer closes a stream. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream){
         print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection did remove stream")
     }
     
     /** Called when negotiation is needed, for example ICE has restarted. */
-    func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection){
+    public func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection){
         print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection should negotiate, no op")
     }
     
     /** Called any time the IceConnectionState changes. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState){
         if newState == .failed {
             sendPeerMessage(messageType: "connectivityError", payload: nil)
         }
@@ -407,12 +407,12 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     
     
     /** Called any time the IceGatheringState changes. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState){
         print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection ice gathering state did change")
     }
     
     /** New ice candidate has been found. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate){
         print(candidate.sdp)
         let candidate:[String: Any] = ["candidate":candidate.sdp,"sdpMid":candidate.sdpMid!,"sdpMLineIndex":candidate.sdpMLineIndex]
         sendPeerMessage(messageType: "candidate", payload: ["candidate":candidate])
@@ -420,12 +420,12 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     }
     
     /** Called when a group of local Ice candidates have been removed. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]){
         print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection did remove candidates")
     }
     
     /** New data channel has been opened. */
-    func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel){
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel){
         print("DEBUG:RTCPeer:RTCPeerConnectionDelegate: peer connection did open data channel")
     }
     
@@ -456,23 +456,23 @@ extension RTCPeer: RTCPeerConnectionDelegate{
     }
 }
 
-class RTCPeer: NSObject {
+public class RTCPeer: NSObject {
     
-    var peerConnection: RTCPeerConnection!
-    var peerId: String
-    var type = RTCClientConfig.DEFAULT_PEER_TYPE   //default peer type to video
-    var oneway = false
-    var sharemyscreen = false
-    var browserPrefix = "webkit"
-    var enableDataChannels = RTCClientConfig.DEFAULT_ENABLE_DATA_CHANNELS
-    var sid: String = String(Date().timeIntervalSince1970)
-    var broadcaster: String?
+    private(set) public var peerConnection: RTCPeerConnection!
+    private(set) public var peerId: String
+    private(set) public var type = RTCClientConfig.DEFAULT_PEER_TYPE   //default peer type to video
+    private(set) public var oneway = false
+    private(set) public var sharemyscreen = false
+    private(set) var browserPrefix = "webkit"
+    private(set) public var enableDataChannels = RTCClientConfig.DEFAULT_ENABLE_DATA_CHANNELS
+    private(set) public var sid: String = String(Date().timeIntervalSince1970)
+    private(set) public var broadcaster: String?
     //var stream
     //var channels
     //var receiveMedia
-    var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
-    let parent: RTCClient
-    var remoteVideoTrack: RTCVideoTrack?
+    private(set) var receiveMedia:[String: Any] = RTCClientConfig.defaultReceiveMedia
+    public let parent: RTCClient
+    fileprivate(set) public var remoteVideoTrack: RTCVideoTrack?
     
     fileprivate var remoteVideoRenderer: RTCEAGLVideoView?
     
@@ -495,7 +495,7 @@ class RTCPeer: NSObject {
     }
     
 
-    init(id: String, options: [String: Any?], parent: RTCClient) {
+    public init(id: String, options: [String: Any?], parent: RTCClient) {
         
         self.parent = parent
         peerId = id
@@ -526,7 +526,7 @@ class RTCPeer: NSObject {
         }
     }
     
-    func setRemoteVideoContainer(view: UIView){
+    public func setRemoteVideoContainer(view: UIView){
         if !RTCClientConfig.audioOnly{
             remoteVideoRenderer = RTCEAGLVideoView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
             remoteVideoTrack?.add(remoteVideoRenderer!)

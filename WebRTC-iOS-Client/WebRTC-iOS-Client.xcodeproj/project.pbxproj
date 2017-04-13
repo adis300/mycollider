@@ -7,11 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E00A8D5F1E9019920005C452 /* RTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D5E1E9019920005C452 /* RTCClient.swift */; };
-		E00A8D7C1E90A3770005C452 /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D7A1E90A3770005C452 /* SSLSecurity.swift */; };
-		E00A8D7D1E90A3770005C452 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D7B1E90A3770005C452 /* WebSocket.swift */; };
-		E00A8D801E90AA770005C452 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D7F1E90AA770005C452 /* SwiftyJSON.swift */; };
-		E00A8D821E90C0160005C452 /* RTCClientUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00A8D811E90C0160005C452 /* RTCClientUtils.swift */; };
+		E0787D5D1E9EFB7200166F48 /* RTCSignaling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0787D5B1E9EFB6900166F48 /* RTCSignaling.framework */; };
+		E0787D5E1E9EFB7200166F48 /* RTCSignaling.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0787D5B1E9EFB6900166F48 /* RTCSignaling.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E08759311E8D7A4F00FC0B65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08759301E8D7A4F00FC0B65 /* AppDelegate.swift */; };
 		E08759331E8D7A4F00FC0B65 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08759321E8D7A4F00FC0B65 /* ViewController.swift */; };
 		E08759361E8D7A4F00FC0B65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E08759341E8D7A4F00FC0B65 /* Main.storyboard */; };
@@ -19,7 +16,6 @@
 		E087593B1E8D7A4F00FC0B65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E08759391E8D7A4F00FC0B65 /* LaunchScreen.storyboard */; };
 		E08759491E8D7F5100FC0B65 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E08759471E8D7F4700FC0B65 /* WebRTC.framework */; };
 		E087594A1E8D7F5100FC0B65 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E08759471E8D7F4700FC0B65 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E087594F1E8D94A000FC0B65 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,6 +26,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				E087594A1E8D7F5100FC0B65 /* WebRTC.framework in Embed Frameworks */,
+				E0787D5E1E9EFB7200166F48 /* RTCSignaling.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -37,12 +34,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E00A8D5E1E9019920005C452 /* RTCClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTCClient.swift; sourceTree = "<group>"; };
-		E00A8D7A1E90A3770005C452 /* SSLSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSLSecurity.swift; sourceTree = "<group>"; };
-		E00A8D7B1E90A3770005C452 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
-		E00A8D7F1E90AA770005C452 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
-		E00A8D811E90C0160005C452 /* RTCClientUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTCClientUtils.swift; sourceTree = "<group>"; };
 		E04B72551E9C2B3100678C85 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		E0787D5B1E9EFB6900166F48 /* RTCSignaling.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RTCSignaling.framework; path = Frameworks/RTCSignaling.framework; sourceTree = "<group>"; };
 		E087592D1E8D7A4F00FC0B65 /* WebRTC-iOS-Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WebRTC-iOS-Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E08759301E8D7A4F00FC0B65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E08759321E8D7A4F00FC0B65 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -52,7 +45,6 @@
 		E087593C1E8D7A4F00FC0B65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E08759471E8D7F4700FC0B65 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = "Frameworks/WebRTC-iOS/WebRTC.framework"; sourceTree = "<group>"; };
 		E087594D1E8D7FCD00FC0B65 /* Bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bridging.h; sourceTree = "<group>"; };
-		E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,29 +53,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E08759491E8D7F5100FC0B65 /* WebRTC.framework in Frameworks */,
+				E0787D5D1E9EFB7200166F48 /* RTCSignaling.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E00A8D791E90A3770005C452 /* Starscream */ = {
-			isa = PBXGroup;
-			children = (
-				E00A8D7A1E90A3770005C452 /* SSLSecurity.swift */,
-				E00A8D7B1E90A3770005C452 /* WebSocket.swift */,
-			);
-			path = Starscream;
-			sourceTree = "<group>";
-		};
-		E00A8D7E1E90AA5B0005C452 /* SwiftyJSON */ = {
-			isa = PBXGroup;
-			children = (
-				E00A8D7F1E90AA770005C452 /* SwiftyJSON.swift */,
-			);
-			path = SwiftyJSON;
-			sourceTree = "<group>";
-		};
 		E04B72541E9C2B3100678C85 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				E08759461E8D7F3900FC0B65 /* Frameworks */,
-				E08759421E8D7EE800FC0B65 /* Utility */,
 				E08759301E8D7A4F00FC0B65 /* AppDelegate.swift */,
 				E087594D1E8D7FCD00FC0B65 /* Bridging.h */,
 				E08759321E8D7A4F00FC0B65 /* ViewController.swift */,
@@ -125,21 +100,10 @@
 			path = "WebRTC-iOS-Client";
 			sourceTree = "<group>";
 		};
-		E08759421E8D7EE800FC0B65 /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				E00A8D7E1E90AA5B0005C452 /* SwiftyJSON */,
-				E00A8D791E90A3770005C452 /* Starscream */,
-				E087594E1E8D94A000FC0B65 /* HTTPRequest.swift */,
-				E00A8D5E1E9019920005C452 /* RTCClient.swift */,
-				E00A8D811E90C0160005C452 /* RTCClientUtils.swift */,
-			);
-			path = Utility;
-			sourceTree = "<group>";
-		};
 		E08759461E8D7F3900FC0B65 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E0787D5B1E9EFB6900166F48 /* RTCSignaling.framework */,
 				E08759471E8D7F4700FC0B65 /* WebRTC.framework */,
 			);
 			name = Frameworks;
@@ -220,12 +184,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E08759331E8D7A4F00FC0B65 /* ViewController.swift in Sources */,
-				E00A8D821E90C0160005C452 /* RTCClientUtils.swift in Sources */,
-				E00A8D7D1E90A3770005C452 /* WebSocket.swift in Sources */,
-				E00A8D7C1E90A3770005C452 /* SSLSecurity.swift in Sources */,
-				E087594F1E8D94A000FC0B65 /* HTTPRequest.swift in Sources */,
-				E00A8D5F1E9019920005C452 /* RTCClient.swift in Sources */,
-				E00A8D801E90AA770005C452 /* SwiftyJSON.swift in Sources */,
 				E08759311E8D7A4F00FC0B65 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -357,6 +315,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WebRTC-iOS-Client/Frameworks/WebRTC-iOS",
+					"$(PROJECT_DIR)/WebRTC-iOS-Client/Frameworks",
 				);
 				INFOPLIST_FILE = "WebRTC-iOS-Client/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -377,6 +336,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WebRTC-iOS-Client/Frameworks/WebRTC-iOS",
+					"$(PROJECT_DIR)/WebRTC-iOS-Client/Frameworks",
 				);
 				INFOPLIST_FILE = "WebRTC-iOS-Client/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

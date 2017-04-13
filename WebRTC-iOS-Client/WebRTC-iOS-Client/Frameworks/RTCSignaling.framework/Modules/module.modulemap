@@ -1,0 +1,10 @@
+framework module RTCSignaling {
+  umbrella header "RTCSignaling.h"
+
+  export *
+  module * { export * }
+}
+
+module RTCSignaling.Swift {
+    header "RTCSignaling-Swift.h"
+}

@@ -172,14 +172,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) RTCClient * 
 @interface RTCClient (SWIFT_EXTENSION(RTCSignaling))
 @end
 
-@class WebSocket;
-@class NSError;
 
 @interface RTCClient (SWIFT_EXTENSION(RTCSignaling))
-- (void)websocketDidConnectWithSocket:(WebSocket * _Nonnull)socket;
-- (void)websocketDidDisconnectWithSocket:(WebSocket * _Nonnull)socket error:(NSError * _Nullable)error;
-- (void)websocketDidReceiveMessageWithSocket:(WebSocket * _Nonnull)socket text:(NSString * _Nonnull)text;
-- (void)websocketDidReceiveDataWithSocket:(WebSocket * _Nonnull)socket data:(NSData * _Nonnull)data;
 @end
 
 
@@ -237,8 +231,17 @@ SWIFT_CLASS("_TtC12RTCSignaling7RTCPeer")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
-@class RTCIceCandidate;
 @class RTCDataChannel;
+@class RTCDataBuffer;
+
+@interface RTCPeer (SWIFT_EXTENSION(RTCSignaling)) <RTCDataChannelDelegate>
+/// The data channel state changed.
+- (void)dataChannelDidChangeState:(RTCDataChannel * _Nonnull)dataChannel;
+/// The data channel successfully received a data buffer.
+- (void)dataChannel:(RTCDataChannel * _Nonnull)dataChannel didReceiveMessageWithBuffer:(RTCDataBuffer * _Nonnull)buffer;
+@end
+
+@class RTCIceCandidate;
 
 @interface RTCPeer (SWIFT_EXTENSION(RTCSignaling)) <RTCPeerConnectionDelegate>
 /// Called when the SignalingState changed.
@@ -261,6 +264,7 @@ SWIFT_CLASS("_TtC12RTCSignaling7RTCPeer")
 - (void)peerConnection:(RTCPeerConnection * _Nonnull)peerConnection didOpenDataChannel:(RTCDataChannel * _Nonnull)dataChannel;
 @end
 
+@class NSError;
 @class NSStream;
 
 SWIFT_CLASS("_TtC12RTCSignaling9WebSocket")
@@ -283,7 +287,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 @property (nonatomic, readonly, copy) NSURL * _Nonnull currentURL;
 /// Used for setting protocols.
 - (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url protocols:(NSArray<NSString *> * _Nullable)protocols OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url writeQueueQOS:(enum NSQualityOfService)writeQueueQOS protocols:(NSArray<NSString *> * _Nullable)protocols;
+- (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url writeQueueQOS:(NSQualityOfService)writeQueueQOS protocols:(NSArray<NSString *> * _Nullable)protocols;
 /// Connect to the WebSocket server on a background thread.
 - (void)connect;
 /// Write a string to the websocket. This sends it as a text frame.

@@ -61,7 +61,7 @@ class ViewController: UIViewController {
 }
 extension ViewController: RTCClientDelegate{
     
-    func rtcClientDidSetLocalMediaStream(client: RTCClient, authorized: Bool, audioOnly: Bool){
+    func rtcClientDidSetLocalMediaStream(client: RTCSignaling.RTCClient, authorized: Bool, audioOnly: Bool){
         if authorized{
             client.setLocalVideoContainer(view: localVideoContainer)
         }else{
@@ -69,10 +69,13 @@ extension ViewController: RTCClientDelegate{
         }
     }
     
-    func rtcClientDidAddRemoteMediaStream(peer: RTCPeer, stream: RTCMediaStream, audioOnly: Bool){
-        if !audioOnly{
-            peer.setRemoteVideoContainer(view: remoteVideoContainer)
-        }
+    func rtcClientDidAddRemoteMediaStream(client: RTCSignaling.RTCClient, peer: RTCSignaling.RTCPeer, stream: RTCMediaStream, audioOnly: Bool){
+        peer.setRemoteVideoContainer(view: remoteVideoContainer)
     }
+    
+    func rtcClientDidRemoveRemoteMediaStream(client: RTCSignaling.RTCClient, peer: RTCSignaling.RTCPeer, stream: RTCMediaStream, audioOnly: Bool){
+        print("Remote peer did finish.")
+    }
+
 }
 

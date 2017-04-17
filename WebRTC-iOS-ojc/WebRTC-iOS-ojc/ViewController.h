@@ -12,7 +12,8 @@
 @interface ViewController : UIViewController<RTCClientDelegate>
 
 - (void)rtcClientDidSetLocalMediaStreamWithClient:(RTCClient *)client authorized:(BOOL)authorized audioOnly:(BOOL)audioOnly;
-- (void)rtcClientDidAddRemoteMediaStreamWithPeer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly;
+- (void)rtcClientDidAddRemoteMediaStreamWithClient:(RTCClient *)client peer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly;
+- (void)rtcClientDidRemoveRemoteMediaStreamWithClient:(RTCClient *)client peer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly;
 
 @end
 

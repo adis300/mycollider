@@ -317,6 +317,7 @@
 					"$(PROJECT_DIR)/WebRTC-iOS-ojc/Frameworks",
 				);
 				INFOPLIST_FILE = "WebRTC-iOS-ojc/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.votebin.WebRTC-iOS-ojc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -335,6 +336,7 @@
 					"$(PROJECT_DIR)/WebRTC-iOS-ojc/Frameworks",
 				);
 				INFOPLIST_FILE = "WebRTC-iOS-ojc/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.votebin.WebRTC-iOS-ojc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -360,6 +362,7 @@
 				E0787D811E9F11AA00166F48 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

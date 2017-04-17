@@ -36,7 +36,6 @@
     _useSpeaker = YES;
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -86,9 +85,11 @@
         [self presentViewController:alertController animated:YES completion:nil];
     }
 }
-- (void)rtcClientDidAddRemoteMediaStreamWithPeer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly{
+- (void)rtcClientDidAddRemoteMediaStreamWithClient:(RTCClient *)client peer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly{
     [peer setRemoteVideoContainerWithView:_remoteVideoContainer];
-    
+}
+- (void)rtcClientDidRemoveRemoteMediaStreamWithClient:(RTCClient *)client peer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly{
+    NSLog(@"Remote peer removed");
 }
 
 

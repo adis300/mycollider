@@ -206,7 +206,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL offerToReceiveV
 SWIFT_PROTOCOL("_TtP12RTCSignaling17RTCClientDelegate_")
 @protocol RTCClientDelegate
 - (void)rtcClientDidSetLocalMediaStreamWithClient:(RTCClient * _Nonnull)client authorized:(BOOL)authorized audioOnly:(BOOL)audioOnly;
-- (void)rtcClientDidAddRemoteMediaStreamWithPeer:(RTCPeer * _Nonnull)peer stream:(RTCMediaStream * _Nonnull)stream audioOnly:(BOOL)audioOnly;
+- (void)rtcClientDidAddRemoteMediaStreamWithClient:(RTCClient * _Nonnull)client peer:(RTCPeer * _Nonnull)peer stream:(RTCMediaStream * _Nonnull)stream audioOnly:(BOOL)audioOnly;
+- (void)rtcClientDidRemoveRemoteMediaStreamWithClient:(RTCClient * _Nonnull)client peer:(RTCPeer * _Nonnull)peer stream:(RTCMediaStream * _Nonnull)stream audioOnly:(BOOL)audioOnly;
 @optional
 - (void)rtcRemotePeerDidChangeAudioStateWithPeer:(RTCPeer * _Nonnull)peer on:(BOOL)on;
 - (void)rtcRemotePeerDidChangeVideoStateWithPeer:(RTCPeer * _Nonnull)peer on:(BOOL)on;

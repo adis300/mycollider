@@ -14,8 +14,6 @@ let serverUrl = "wss://iconthin.com:8443/ws/"
 
 class ViewController: UIViewController {
     
-    var localVideoTrack: RTCVideoTrack? //Not yet used
-    var remoteVideoTrack: RTCVideoTrack? //Not yet used
     var useSpeaker = false
     var videoSwitch = true
     var audioSwitch = true

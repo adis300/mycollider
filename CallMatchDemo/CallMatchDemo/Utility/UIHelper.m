@@ -37,6 +37,14 @@ static CGFloat kLoadingViewMargin = 20;
     
 }
 
++ (void) showAlert: (NSString * ) title message: (NSString * ) message viewController: (UIViewController * )vc okClick: (void (^)(UIAlertAction *action)) handler {
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle: title message: message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:handler];
+    [alertController addAction:actionOk];
+    [vc presentViewController:alertController animated:YES completion:nil];
+}
+
 + (void) showLoadingIndicator: (UIViewController *) viewController message: (NSString * ) msg {
     [UIHelper showLoadingIndicatorOnView:viewController.view message:msg];
 }

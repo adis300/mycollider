@@ -23,7 +23,7 @@
         appDelegate.gender = _genderSelector.selectedSegmentIndex == 0 ? @"m" : @"f";
         [self performSegueWithIdentifier:@"signin_segue" sender:self];
     }else{
-        [UIHelper showAlert:@"Sorry" message:@"Please enter a valid username"];
+        [UIHelper showAlert:@"Sorry" message:@"Please enter a valid username" viewController:self];
     }
     
 }

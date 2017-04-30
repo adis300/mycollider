@@ -8,6 +8,7 @@
 
 @interface UIHelper : NSObject
 
++ (void) showAlert: (NSString * ) title message: (NSString * ) message viewController: (UIViewController * )vc okClick: (void (^)(UIAlertAction *action)) handler;
 + (void) showAlert: (NSString * ) title message: (NSString * ) message viewController: (UIViewController * )vc;
 + (void) showAlert: (NSString * ) title message: (NSString * ) message;
 

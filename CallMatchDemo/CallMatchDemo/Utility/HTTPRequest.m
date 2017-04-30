@@ -161,9 +161,11 @@
                     return;
                 }
             }
+            NSLog(@"received data: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
             
             // All condition checks are done, call success handler
             if(successHandler){
+                
                 // Process json
                 id jsonData;
                 if(data) jsonData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];

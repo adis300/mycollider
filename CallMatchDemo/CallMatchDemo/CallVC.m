@@ -13,7 +13,7 @@
 
 
 
-#define SERVER_URL @"http://iconthin.com:8080/"
+#define SERVER_URL @"https://iconthin.com:8443/"
 #define SOCKET_SERVER_URL @"wss://iconthin.com:8443/ws/"
 
 NSString* username = nil;
@@ -69,13 +69,13 @@ dispatch_queue_t taskQueue;
     NSLog(@"Checking for room match");
     NSString* url = [NSString stringWithFormat:@"%@%@%@", SERVER_URL, @"myroom?uname=", username];
     [HTTPRequest get:url success:^(NSDictionary<NSString *,id> * response) {
-        if (response[@"data"]){
-            NSString* roomId = response[@"data"];
-            [self startCall: roomId];
-        }else{
+        if ([response[@"data"] isKindOfClass:[NSNull class]] || !response[@"data"]){
             [self scheduleTaskAfter:5 callback:^{
                 [self checkRoom];
             }];
+        }else{
+            NSString* roomId = response[@"data"];
+            [self startCall: roomId];
         }
     } failure:^(NSError * err) {
         [UIHelper showAlert:@"Error" message:err.localizedDescription viewController:self okClick:^(UIAlertAction *action) {
@@ -97,6 +97,7 @@ dispatch_queue_t taskQueue;
 }
 
 -(void) startCall: (NSString*) roomId{
+    NSLog(@"Starting a call session in room: %@", roomId);
     NSString* socketUrl = [NSString stringWithFormat:@"%@%@%@", SOCKET_SERVER_URL, @"?uname=", username];
     [RTCClient.shared connectWithServerUrl:socketUrl roomId:roomId delegate:self];
 }

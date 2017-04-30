@@ -1,5 +1,19 @@
 #import "HTTPRequest.h"
 
+@interface InsecureSessionDelegate : NSObject<NSURLSessionDelegate>
+
+@end
+
+@implementation InsecureSessionDelegate
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
+{
+    completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+}
+
+@end
+
+
 @implementation HTTPRequest
 
 // ---------------------- Implement post methods -----------------------------
@@ -113,9 +127,13 @@
     
     NSURLSession *session;
     
-    if(delegate) session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:delegate delegateQueue:nil];
-    else session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    
+    if(ALLOW_INSECURE_CONNECTION)
+        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:[[InsecureSessionDelegate alloc]init] delegateQueue:nil];
+    else{
+        if(delegate) session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:delegate delegateQueue:nil];
+        else session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    }
+
     // Formulate request method & Limit to send/accepts json content
     [request setHTTPMethod:httpMethod];
     if(headers && [headers objectForKey:@"Content-Type"]){
@@ -220,8 +238,12 @@
     
     NSURLSession *session;
     
-    if(delegate) session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:delegate delegateQueue:nil];
-    else session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    if(ALLOW_INSECURE_CONNECTION)
+        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:[[InsecureSessionDelegate alloc]init] delegateQueue:nil];
+    else{
+        if(delegate) session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:delegate delegateQueue:nil];
+        else session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    }
     
     // Formulate request method & Limit to send/accepts json content
     [request setHTTPMethod:httpMethod];

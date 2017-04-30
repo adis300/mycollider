@@ -2,6 +2,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define ALLOW_INSECURE_CONNECTION true
+
 @interface HTTPRequest : NSObject
 
 

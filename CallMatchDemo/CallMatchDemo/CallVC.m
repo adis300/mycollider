@@ -22,6 +22,7 @@ NSString* gender = nil;
 dispatch_queue_t taskQueue;
 
 @interface CallVC ()
+@property (weak, nonatomic) IBOutlet UILabel *connectedLabel;
 
 @end
 
@@ -29,6 +30,7 @@ dispatch_queue_t taskQueue;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _connectedLabel.hidden = YES;
     username = ((AppDelegate *)[UIApplication sharedApplication].delegate).username;
     gender = ((AppDelegate *)[UIApplication sharedApplication].delegate).gender;
 
@@ -98,8 +100,8 @@ dispatch_queue_t taskQueue;
 
 -(void) startCall: (NSString*) roomId{
     NSLog(@"Starting a call session in room: %@", roomId);
-    NSString* socketUrl = [NSString stringWithFormat:@"%@%@%@", SOCKET_SERVER_URL, @"?uname=", username];
-    [RTCClient.shared connectWithServerUrl:socketUrl roomId:roomId delegate:self];
+    NSDictionary<NSString*, NSString*>* params = @{@"uname":username};
+    [RTCClient.shared connectWithServerUrl:SOCKET_SERVER_URL roomId:roomId delegate:self params: params];
 }
 
 -(void) endCall {
@@ -117,6 +119,8 @@ dispatch_queue_t taskQueue;
 }
 - (void)rtcClientDidAddRemoteMediaStreamWithClient:(RTCClient *)client peer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly{
     [UIHelper dismissLoadingIndicator];
+    _connectedLabel.hidden = NO;
+
 }
 - (void)rtcClientDidRemoveRemoteMediaStreamWithClient:(RTCClient *)client peer:(RTCPeer *)peer stream:(RTCMediaStream *)stream audioOnly:(BOOL)audioOnly{
     NSLog(@"Remote peer removed");

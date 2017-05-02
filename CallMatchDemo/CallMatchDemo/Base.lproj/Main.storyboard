@@ -123,9 +123,22 @@
                     <view key="view" contentMode="scaleToFill" id="X9c-uv-oBd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gW8-bU-NB6">
+                                <rect key="frame" x="138" y="321.5" width="99" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="gW8-bU-NB6" firstAttribute="centerX" secondItem="X9c-uv-oBd" secondAttribute="centerX" id="WHA-xt-jV1"/>
+                            <constraint firstItem="gW8-bU-NB6" firstAttribute="centerY" secondItem="X9c-uv-oBd" secondAttribute="centerY" id="sx6-WX-Li9"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="connectedLabel" destination="gW8-bU-NB6" id="5Fh-1o-Sd2"/>
                         <segue destination="NgC-pA-387" kind="show" identifier="callend_segue" id="OpN-av-7BK"/>
                     </connections>
                 </viewController>

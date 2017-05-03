@@ -12,8 +12,6 @@
 		E08DCE2F1EB3DE45007A8FAF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E08DCE2D1EB3DE45007A8FAF /* Main.storyboard */; };
 		E08DCE311EB3DE45007A8FAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E08DCE301EB3DE45007A8FAF /* Assets.xcassets */; };
 		E08DCE341EB3DE45007A8FAF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E08DCE321EB3DE45007A8FAF /* LaunchScreen.storyboard */; };
-		E08DCE401EB3DEC1007A8FAF /* RTCSignaling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E08DCE3C1EB3DE9B007A8FAF /* RTCSignaling.framework */; };
-		E08DCE411EB3DEC1007A8FAF /* RTCSignaling.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E08DCE3C1EB3DE9B007A8FAF /* RTCSignaling.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E08DCE421EB3DEC1007A8FAF /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E08DCE3D1EB3DE9B007A8FAF /* WebRTC.framework */; };
 		E08DCE431EB3DEC1007A8FAF /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E08DCE3D1EB3DE9B007A8FAF /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E08DCE471EB3DF72007A8FAF /* SignInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E08DCE461EB3DF72007A8FAF /* SignInVC.m */; };
@@ -21,6 +19,8 @@
 		E0A4A47A1EB52F910083F592 /* UIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E0A4A4791EB52F910083F592 /* UIHelper.m */; };
 		E0A4A4801EB5307E0083F592 /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E0A4A47F1EB5307E0083F592 /* MainVC.m */; };
 		E0A4A4831EB532550083F592 /* CallVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E0A4A4821EB532550083F592 /* CallVC.m */; };
+		E0D528901EBA4D550097D771 /* RTCSignaling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0D5288E1EBA4D4C0097D771 /* RTCSignaling.framework */; };
+		E0D528911EBA4D550097D771 /* RTCSignaling.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0D5288E1EBA4D4C0097D771 /* RTCSignaling.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,8 +30,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E08DCE411EB3DEC1007A8FAF /* RTCSignaling.framework in Embed Frameworks */,
 				E08DCE431EB3DEC1007A8FAF /* WebRTC.framework in Embed Frameworks */,
+				E0D528911EBA4D550097D771 /* RTCSignaling.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,7 +47,6 @@
 		E08DCE301EB3DE45007A8FAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E08DCE331EB3DE45007A8FAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E08DCE351EB3DE45007A8FAF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E08DCE3C1EB3DE9B007A8FAF /* RTCSignaling.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RTCSignaling.framework; sourceTree = "<group>"; };
 		E08DCE3D1EB3DE9B007A8FAF /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebRTC.framework; sourceTree = "<group>"; };
 		E08DCE451EB3DF72007A8FAF /* SignInVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInVC.h; sourceTree = "<group>"; };
 		E08DCE461EB3DF72007A8FAF /* SignInVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInVC.m; sourceTree = "<group>"; };
@@ -59,6 +58,7 @@
 		E0A4A47F1EB5307E0083F592 /* MainVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainVC.m; sourceTree = "<group>"; };
 		E0A4A4811EB532550083F592 /* CallVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallVC.h; sourceTree = "<group>"; };
 		E0A4A4821EB532550083F592 /* CallVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallVC.m; sourceTree = "<group>"; };
+		E0D5288E1EBA4D4C0097D771 /* RTCSignaling.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RTCSignaling.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,8 +66,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E08DCE401EB3DEC1007A8FAF /* RTCSignaling.framework in Frameworks */,
 				E08DCE421EB3DEC1007A8FAF /* WebRTC.framework in Frameworks */,
+				E0D528901EBA4D550097D771 /* RTCSignaling.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,7 +123,7 @@
 		E08DCE3B1EB3DE9B007A8FAF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E08DCE3C1EB3DE9B007A8FAF /* RTCSignaling.framework */,
+				E0D5288E1EBA4D4C0097D771 /* RTCSignaling.framework */,
 				E08DCE3D1EB3DE9B007A8FAF /* WebRTC.framework */,
 			);
 			path = Frameworks;

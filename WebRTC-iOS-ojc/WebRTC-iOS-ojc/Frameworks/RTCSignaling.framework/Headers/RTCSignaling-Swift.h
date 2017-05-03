@@ -160,7 +160,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) RTCClient * 
 @property (nonatomic, strong) RTCMediaStream * _Nullable localMediaStream;
 @property (nonatomic, strong) id <RTCClientDelegate> _Nullable delegate;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
-- (void)connectWithServerUrl:(NSString * _Nonnull)serverUrl roomId:(NSString * _Nonnull)roomId delegate:(id <RTCClientDelegate> _Nonnull)delegate;
+- (void)connectWithServerUrl:(NSString * _Nonnull)serverUrl roomId:(NSString * _Nonnull)roomId delegate:(id <RTCClientDelegate> _Nonnull)delegate params:(NSDictionary<NSString *, NSString *> * _Nullable)params;
 - (void)setAudioOn:(BOOL)on;
 - (void)setVideoOn:(BOOL)on;
 - (void)setAudioOutputWithUseSpeaker:(BOOL)useSpeaker;
